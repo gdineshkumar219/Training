@@ -4,7 +4,7 @@ int targetNumber = new Random ().Next (1, 101);
 for (int i = 1; ; i++) {
    Console.Write ("Enter your guess:");
    string value = Console.ReadLine ();
-   if (!int.TryParse (value, out int result) || (result < 1 || result > 100)) { Console.WriteLine ("Please enter a value between 1 and 100"); }
+   if (!int.TryParse (value, out int result) || (result < 1 || result > 100)) { Console.WriteLine ("Please enter a value between 1 and 100");continue; }
    if (result == targetNumber) {
       Console.WriteLine ($"Your guess is correct at {i} tries.");
       if (!PlayAgain ()) break;
@@ -16,4 +16,5 @@ bool PlayAgain () {
    char key = Console.ReadKey (true).KeyChar;
    return key == 'y';
 }
+
 
