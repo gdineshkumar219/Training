@@ -1,5 +1,5 @@
 ﻿Console.WriteLine ("Welcome to the Number Prediction Game!");
-Console.WriteLine ("Think of a number between 0 and 127, and I will try to guess it in 7 questions.");
+Console.WriteLine ("Think of a number between 1 and 128, and I will try to guess it in 7 questions.");
 int guess = 0;
 int lowerBound = 0;
 int upperBound = 127;
@@ -15,7 +15,6 @@ for (int questionNumber = 1; questionNumber <= 7; questionNumber++) {
       upperBound -= bitValue;
    } else {
       Console.WriteLine ("Invalid input. Please answer 'yes' or 'no'.");
-      //Console.WriteLine ($"Question {questionNumber}: Is the number greater than {guess + bitValue}? (yes/no)");
       questionNumber--;
       bitValue = bitValue * 2;
    }
