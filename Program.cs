@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ﻿Console.Write ("Enter the number to convert:");
+||||||| 4c8f63c
+﻿using System;
+
+Console.Write ("Enter the number to convert:");
+Console.Write ("Enter the number to convert:");
 int num = Convert.ToInt32 (Console.ReadLine ());
 string result = "";
 int rem;
@@ -8,8 +14,7 @@ string dec2bin (int num) {
    while (num > 1) {
       rem = num % 2;
       result = Convert.ToString (rem) + result;num /= 2;
-   }
-   return result;
+   }  return result;
 }
 string dec2hex (int num) {
    string result = num.ToString ("X");
