@@ -1,5 +1,3 @@
-﻿using System;
-
 Console.Write ("Enter the number to convert:");
 int num = Convert.ToInt32 (Console.ReadLine ());
 string result = "";
@@ -11,7 +9,6 @@ string dec2bin (int num) {
       rem = num % 2;
       result = Convert.ToString (rem) + result;
       num /= 2;
-
    }
    return result;
 }
