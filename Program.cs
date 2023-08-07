@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-﻿Console.Write ("Enter the number to convert:");
-||||||| 4c8f63c
-﻿using System;
-
-Console.Write ("Enter the number to convert:");
 Console.Write ("Enter the number to convert:");
 int num = Convert.ToInt32 (Console.ReadLine ());
 string result = "";
