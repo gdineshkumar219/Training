@@ -1,16 +1,30 @@
-﻿int num;
-while (true) {
-   Console.Write ("Enter the number of terms: ");
-   if (int.TryParse (Console.ReadLine (), out num) && num >= 0) {
-      break;
-   } else {
-      Console.WriteLine ("Invalid input. Please enter a non-negative integer.");
+﻿int num1 = GetIntegerInput ("Enter the first number: ");
+int num2 = GetIntegerInput ("Enter the second number: ");
+
+int gcd = 1;
+for (int i = 1; i <= Math.Min (num1, num2); i++) {
+   if (num1 % i == 0 && num2 % i == 0) {
+      gcd = i;
    }
 }
-Console.WriteLine ("Fibonacci series is:");
-for (int i = 0; i < num; i++) {
-   Console.WriteLine ($"{FibonacciSeries (i)}");
+Console.WriteLine ("GCD: " + gcd);
+Console.WriteLine ("LCM: " + (num1 * num2) / gcd);
+int GetIntegerInput (string prompt) {
+   int value;
+   while (true) {
+      Console.Write (prompt);
+      if (int.TryParse (Console.ReadLine (), out value)) {
+         return value;
+      } else {
+         Console.WriteLine ("Invalid input. Please enter an integer.");
+      }
+   }
 }
-int FibonacciSeries (int num) {
-   return num <= 1 ? num : FibonacciSeries (num - 1) + FibonacciSeries (num - 2);
-}
+
+
+
+
+
+
+
+
