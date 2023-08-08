@@ -1,6 +1,5 @@
 ﻿int num1 = GetIntegerInput ("Enter the first number: ");
 int num2 = GetIntegerInput ("Enter the second number: ");
-
 int gcd = 1;
 for (int i = 1; i <= Math.Min (num1, num2); i++) {
    if (num1 % i == 0 && num2 % i == 0) {
