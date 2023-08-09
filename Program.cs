@@ -6,5 +6,3 @@ for (int i = 1; i <= 7; i++) {
    rem += (Console.ReadKey (true).Key == ConsoleKey.N) ? (int)Math.Pow (2, (i - 1)) : 0;
 }
 Console.WriteLine ($"I guessed it! The number you were thinking of is {rem}.");
-
-
