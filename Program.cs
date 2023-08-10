@@ -1,31 +1,21 @@
-﻿Console.WriteLine ("Welcome to the Number Prediction Game!");
-Console.WriteLine ("Think of a number between 1 and 128, and I will try to guess it in 7 questions.");
-int guess = 0;
-int lowerBound = 0;
-int upperBound = 127;
-int bitValue = (lowerBound + upperBound + 1) / 2;
-bool correctGuess = false;
-for (int questionNumber = 1; questionNumber <= 7; questionNumber++) {
-   Console.WriteLine ($"Question {questionNumber}: Is the number greater than {guess + bitValue}? ((y)es/ (n)o)");
-   char key = Console.ReadKey (true).KeyChar;
-   if (key == 'y') {
-      guess += bitValue;
-      lowerBound += bitValue;
-   } else if (key == 'n') {
-      upperBound -= bitValue;
-   } else {
-      Console.WriteLine ("Invalid input. Please answer 'yes' or 'no'.");
-      questionNumber--;
-      bitValue = bitValue * 2;
-   }
-   bitValue /= 2;
-   if (lowerBound == upperBound) {
-      correctGuess = true;
-      break;
+using static System.Console;
+int lowLimit = 0, highLimit = 100, mid;
+WriteLine ("Think of a number between 1 to 100\nThe computer will guess it");
+for (int tries = 1; tries <= 6;) {
+   mid = (lowLimit + highLimit) / 2;
+   Write ($"\nIs the number greater than {mid}? (Y)es / (N)o: ");
+   switch (ReadKey ().Key) {
+      case ConsoleKey.Y:
+         lowLimit = mid + 1;
+         tries++;
+         break;
+      case ConsoleKey.N:
+         highLimit = mid;
+         tries++;
+         break;
+      default:
+         WriteLine ("\nEnter a valid key");
+         break;
    }
 }
-if (correctGuess) {
-   Console.WriteLine ($"I guessed it! The number you were thinking of is {guess + 1}.");
-} else {
-   Console.WriteLine ("I could not guess the number correctly in 7 questions. You win!");
-}
+WriteLine ($"\nThe secret number is {highLimit}");
