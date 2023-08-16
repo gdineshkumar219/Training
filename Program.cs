@@ -5,7 +5,7 @@ for (int i = 1; i <= 10; i++) {
 int GetIntegerInput (string prompt) {
    while (true) {
       Console.Write (prompt);
-      if (int.TryParse (Console.ReadLine (), out int value)) return value;
+      if (int.TryParse (Console.ReadLine (), out int value) && value>0) return value;
       Console.WriteLine ("Invalid input. Please enter an integer.");
    }
 }
