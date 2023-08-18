@@ -1,14 +1,14 @@
-﻿int num1 = GetIntegerInput ("Enter the first number: ");
-int num2 = GetIntegerInput ("Enter the second number: ");
-int gcd = 1;
-for (int i = 1; i <= Math.Min (num1, num2); i++) {
-   if (num1 % i == 0 && num2 % i == 0) {
-      gcd = i;
-   }
+﻿int n = GetIntegerInput ("Enter the number of integers to find GCD and LCM:: ");
+int[] numbers = new int[n];
+
+for (int i = 0; i < n; i++) {
+   numbers[i] = GetIntegerInput ("Enter number " + (i + 1) + ": ");
 }
+int gcd = CalculateGCD (numbers);
+int lcm = CalculateLCM (numbers);
 Console.WriteLine ("GCD: " + gcd);
-Console.WriteLine ("LCM: " + (num1 * num2) / gcd);
-int GetIntegerInput (string prompt) {
+Console.WriteLine ("LCM: " + lcm);
+static int GetIntegerInput (string prompt) {
    int value;
    while (true) {
       Console.Write (prompt);
@@ -19,11 +19,24 @@ int GetIntegerInput (string prompt) {
       }
    }
 }
-
-
-
-
-
-
-
+int CalculateGCD (int[] numbers) {
+   int gcd = numbers[0];
+   for (int i = 1; i < numbers.Length; i++) {
+      gcd = CalculatedGCD (gcd, numbers[i]);
+   }
+   return gcd;
+}
+int CalculatedGCD (int a, int b) {
+   if (b == 0) {
+      return a;
+   }
+   return CalculatedGCD (b, a % b);
+}
+int CalculateLCM (int[] numbers) {
+   int lcm = numbers[0];
+   for (int i = 1; i < numbers.Length; i++) {
+      lcm = (lcm * numbers[i]) / CalculatedGCD (lcm, numbers[i]);
+   }
+   return lcm;
+}
 
