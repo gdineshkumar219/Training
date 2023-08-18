@@ -1,6 +1,5 @@
 ﻿int n = GetIntegerInput ("Enter the number of integers to find GCD and LCM:: ");
 int[] numbers = new int[n];
-
 for (int i = 0; i < n; i++) {
    numbers[i] = GetIntegerInput ("Enter number " + (i + 1) + ": ");
 }
@@ -12,7 +11,7 @@ static int GetIntegerInput (string prompt) {
    int value;
    while (true) {
       Console.Write (prompt);
-      if (int.TryParse (Console.ReadLine (), out value)) {
+      if (int.TryParse (Console.ReadLine (), out value) && value>=0) {
          return value;
       } else {
          Console.WriteLine ("Invalid input. Please enter an integer.");
@@ -39,4 +38,3 @@ int CalculateLCM (int[] numbers) {
    }
    return lcm;
 }
-
