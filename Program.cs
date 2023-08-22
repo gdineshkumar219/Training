@@ -21,4 +21,3 @@ int CalculateDigitalRoot (int n) {
       n = sum;
    }
    return n;
-}
