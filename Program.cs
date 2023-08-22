@@ -1,16 +1,16 @@
 ﻿long number = GetValidNumberInput ();
 Console.WriteLine ($"\nWords representation: {NumberToWords (number)}");
 Console.WriteLine ($"\nRoman numeral representation: {NumberToRoman (number)}");
+
 long GetValidNumberInput () {
    long number = 0;
    while (true) {
       Console.Write ("Enter the Number between 1 and 1000: ");
-      if (long.TryParse (Console.ReadLine (), out number) && number >= 1 && number <= 1000) {
-         return number;
-      }
+      if (long.TryParse (Console.ReadLine (), out number) && number >= 1 && number <= 1000) return number;
       Console.WriteLine ("Please enter a valid number between 1 and 1000.");
    }
 }
+
 string NumberToWords (long number) {
    if (number == 0) return "Zero";
    if (number < 0) return $"Minus {NumberToWords (Math.Abs (number))}";
@@ -23,6 +23,7 @@ string NumberToWords (long number) {
    if (number < 1000) return $"{units[number / 100]} Hundred" + (number % 100 > 0 ? " and " + NumberToWords (number % 100) : "");
    return $"{NumberToWords (number / 1000)} Thousand" + (number % 1000 > 0 ? " " + NumberToWords (number % 1000) : "");
 }
+
 string NumberToRoman (long number) {
    if (number == 0) return "No symbol";
    if (number < 0) return $"Minus {NumberToRoman (Math.Abs (number))}";
