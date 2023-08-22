@@ -1,9 +1,8 @@
 ﻿char[] seed = { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
 string[] wordList = File.ReadAllLines (@"C:\Users\ganesamoorthydi\Downloads\words.txt");
-int total = 0;
+int total = 0; int score;
 string[] validWords = new string[wordList.Length]; int validWordIndex = 0;
 int[] scores = new int[wordList.Length];
-int score;
 foreach (var word in wordList) {
    if (word.Length >= 4 && word.Contains (seed[0]) && (word.All (seed.Contains))) {
       score = seed.All (word.Contains) ? word.Length + 7 : (word.Length == 4 ? 1 : word.Length);
