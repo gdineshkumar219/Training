@@ -9,6 +9,7 @@ for (i = 0; i < rows; i++) {
    }
    Console.WriteLine ();
 }
+
 int GetIntegerInput () {
    while (true) {
       Console.Write ("Enter the number of rows:");
