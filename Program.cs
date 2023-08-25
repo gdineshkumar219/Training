@@ -1,5 +1,5 @@
 ﻿char[] seed = { 'U', 'X', 'A', 'L', 'T', 'N', 'E' };
-string[] wordList = File.ReadAllLines (@"C:\Users\ganesamoorthydi\Downloads\words.txt");
+string[] wordList = File.ReadAllLines ("C:\\etc\\words.txt");
 int total = 0;
 List<(string word, int score)> validWordScores = new List<(string, int)> ();
 foreach (var word in wordList) {
@@ -9,10 +9,9 @@ foreach (var word in wordList) {
       validWordScores.Add ((word, score));
    }
 }
-validWordScores.Sort ((a, b) => b.score.CompareTo (a.score));
-foreach (var (word, score) in validWordScores) {
-   Console.ForegroundColor = seed.All (word.Contains)  ? ConsoleColor.Green :ConsoleColor.White;
-   Console.WriteLine ($"{score,4}. {word}");
+foreach (var dictWord in validWordScores.OrderByDescending (a => a.score).ThenBy (a => a.word)) {
+   Console.ForegroundColor = seed.All (dictWord.word.Contains) ? ConsoleColor.Green : ConsoleColor.White;
+   Console.WriteLine ($"{dictWord.score,4}. {dictWord.word}");
 }
 Console.ResetColor ();
 Console.WriteLine ("----");
