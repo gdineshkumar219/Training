@@ -4,7 +4,7 @@ for (int i = 0; i < n; i++) numbers[i] = GetIntegerInput ($"Enter number{i + 1}:
 int gcd = CalculateGCD (numbers);
 int lcm = CalculateLCM (numbers);
 Console.WriteLine ($"GCD:{gcd}");
-Console.WriteLine ($"LCM: {lcm}");
+Console.WriteLine ($"LCM:{lcm}");
 
 int GetIntegerInput (string prompt) {
    while (true) {
