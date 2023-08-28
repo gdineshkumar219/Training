@@ -11,13 +11,12 @@ int GetValidNumberInput () {
 }
 
 string NumberToWords (int number) {
-   string[] units = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" };
-   string[] teens = { "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
-   string[] tensCount = { "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
-   if (number < 10) return units[number - 1];
-   if (number < 20) return teens[number - 11];
-   if (number < 100) return tensCount[number / 10] + (number % 10 > 0 ? " " + units[number % 10 - 1] : "");
-   if (number < 1000) return $"{units[number / 100 - 1]} Hundred" + (number % 100 > 0 ? " and " + NumberToWords (number % 100) : "");
+   string[] unitsPlace = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" ,"Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+   string[] tensCount = { "","Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+   if (number < 10) return unitsPlace[number - 1];
+   if (number < 20) return unitsPlace[number - 1];
+   if (number < 100) return tensCount[number / 10] + (number % 10 > 0 ? " " + unitsPlace[(number % 10) - 1] : "");
+   if (number < 1000) return $"{unitsPlace[number / 100 - 1]} Hundred" + (number % 100 > 0 ? " and " + NumberToWords (number % 100) : "");
    return $"{NumberToWords (number / 1000)} Thousand" + (number % 1000 > 0 ? " " + NumberToWords (number % 1000) : "");
 }
 
