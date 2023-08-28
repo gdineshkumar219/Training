@@ -11,8 +11,8 @@ int GetValidNumberInput () {
 }
 
 string NumberToWords (int number) {
-   string[] unitsPlace = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine" ,"Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
-   string[] tensCount = { "","Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+   string[] unitsPlace = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+   string[] tensCount = { "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
    if (number < 10) return unitsPlace[number - 1];
    if (number < 20) return unitsPlace[number - 1];
    if (number < 100) return tensCount[number / 10] + (number % 10 > 0 ? " " + unitsPlace[(number % 10) - 1] : "");
