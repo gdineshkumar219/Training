@@ -25,7 +25,6 @@ static bool IsArmstrong (int num) {
    int originalNum = num;
    int numDigits = (int)Math.Log10 (num) + 1;
    int sum = 0;
-
    while (num > 0) {
       int digit = num % 10;
       sum += (int)Math.Pow (digit, numDigits);
