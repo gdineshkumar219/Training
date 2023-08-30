@@ -1,19 +1,13 @@
-﻿int n = GetIntegerInput ();
-int result = CalculateNthArmstrong (n);
-Console.WriteLine ($"The {n}th Armstrong number is: {result}");
-
-static int GetIntegerInput () {
-   while (true) {
-      Console.Write ("\nEnter n to find the Nth Armstrong number: ");
-      if (int.TryParse (Console.ReadLine (), out int value)) return value;
-      Console.WriteLine ("Invalid input. Please enter an integer.");
-   }
+﻿if (!int.TryParse (args[0], out int value)) {
+   Console.WriteLine ("Invalid input.Please enter an integer.");
+   return;
 }
+int result = CalculateNthArmstrong (value);
+Console.WriteLine ($"The {value}th Armstrong number is: {result}");
 
 static int CalculateNthArmstrong (int n) {
    if (n == 1) return 0;
-   int count = 1;
-   int num = 1;
+   int count = 1, num = 1;
    while (count < n) {
       num++;
       if (IsArmstrong (num)) count++;
