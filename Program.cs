@@ -11,13 +11,19 @@ int GetValidNumberInput () {
 }
 
 string NumberToWords (int number) {
-   string[] unitsPlace = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+   string[] unitsPlace = { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
    string[] tensCount = { "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
-   if (number < 10) return unitsPlace[number - 1];
    if (number < 20) return unitsPlace[number - 1];
-   if (number < 100) return tensCount[number / 10] + (number % 10 > 0 ? " " + unitsPlace[(number % 10) - 1] : "");
-   if (number < 1000) return $"{unitsPlace[number / 100 - 1]} Hundred" + (number % 100 > 0 ? " and " + NumberToWords (number % 100) : "");
-   return $"{NumberToWords (number / 1000)} Thousand" + (number % 1000 > 0 ? " " + NumberToWords (number % 1000) : "");
+   if (number < 100) {
+      int tensDigit = number % 10;
+      return tensCount[number / 10] + (tensDigit > 0 ? " " + unitsPlace[(tensDigit) - 1] : "");
+   }
+   if (number < 1000) {
+      int hundredsDigit = number % 100;
+      return $"{unitsPlace[number / 100 - 1]} Hundred" + (hundredsDigit > 0 ? " and " + NumberToWords (hundredsDigit) : "");
+   }
+   int thousandsDigit = number % 1000;
+   return $"{NumberToWords (number / 1000)} Thousand" + (thousandsDigit > 0 ? " " + NumberToWords (thousandsDigit) : "");
 }
 
 string NumberToRoman (int number) {
