@@ -1,5 +1,5 @@
 ﻿int inputNumber = GetIntegerInput ();
-Console.WriteLine (IsArmstrongNumber (inputNumber) is true ? $"{inputNumber} is an ARMSTRONG number." : $"{inputNumber} is not an ARMSTRONG number.");
+Console.WriteLine (IsArmstrongNumber (inputNumber) ? $"{inputNumber} is an ARMSTRONG number." : $"{inputNumber} is not an ARMSTRONG number.");
 
 int GetIntegerInput () {
    while (true) {
