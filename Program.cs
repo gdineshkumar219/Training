@@ -5,11 +5,11 @@ string GetPassword () {
    while (true) {
       Console.Write ("Enter the password: ");
       password = Console.ReadLine ();
-      Console.WriteLine ($"Hey you your,{PasswordWarnings (password)}");
-      if (string.IsNullOrEmpty (PasswordWarnings (password))) {
+      var res = PasswordWarnings (password);
+      if (string.IsNullOrEmpty (res)) {
          Console.WriteLine ("Password is strong.");
          break;
-      } else Console.WriteLine ("Password is Weak. Please try again.");
+      } else Console.WriteLine ($"Password is weak.{res}\nPlease try again.");
    }
    return password;
 }
