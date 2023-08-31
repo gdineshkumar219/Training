@@ -1,8 +1,8 @@
-﻿string[] wordArray = { "a", "ab", "abc", "abcdef", "adtfiwft" };
-Console.WriteLine (ToFindLongestAbecedarian (wordArray));
+﻿string[] wordArray = { "a", "ab", "abc", "abcdefg", "adtfiwft" };
+Console.WriteLine ($"The longest Abecedarian word present is {GetLongestAbecedarian (wordArray)}.");
 
-static string ToFindLongestAbecedarian (string[] wordArray) {
-   if (!wordArray.Any ()) return "Empty array!";
+static string GetLongestAbecedarian (string[] wordArray) {
+   if (!wordArray.Any ()) return "";
    string result = "";
    foreach (string word in wordArray) {
       char[] chars = word.ToCharArray ();
