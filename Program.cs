@@ -41,7 +41,7 @@ void DisplayChessCoins (int i, int j) {
          else if (j == 5) Console.Write (" " + '\u2654');
          break;
       case 2: Console.Write (" " + '\u2659'); break;
-      case 7: Console.Write ("" + '\u265F'); break;
+      case 7: Console.Write (" " + '\u265F'); break;
       case 8:
          if (j is 1 or 8) Console.Write (" " + '\u265C');
          else if (j is 3 or 6) Console.Write (" " + '\u265D');
