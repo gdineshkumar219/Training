@@ -13,4 +13,5 @@ int GetIntegerInput () {
       Console.WriteLine ("Invalid input. Please enter an integer.");
    }
 }
+
 void SwapTwoValues (ref int a, ref int b) => (a, b) = (b, a);
