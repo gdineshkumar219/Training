@@ -1,9 +1,10 @@
 ﻿int a = GetIntegerInput ();
 int b = GetIntegerInput ();
 Console.WriteLine ("The values before swapping:");
-Console.WriteLine ($"a={a}");
-Console.WriteLine ($"b={b}");
-SwapTwoValues (a, b);
+Console.WriteLine ($"a={a}\nb={b}");
+SwapTwoValues (ref a, ref b);
+Console.WriteLine ("The values after swapping: ");
+Console.WriteLine ($"a={a} \nb={b}");
 
 int GetIntegerInput () {
    while (true) {
@@ -12,9 +13,4 @@ int GetIntegerInput () {
       Console.WriteLine ("Invalid input. Please enter an integer.");
    }
 }
-void SwapTwoValues (int a, int b) {
-   (a, b) = (b, a);
-   Console.WriteLine ("The values after swapping: ");
-   Console.WriteLine ($"a={a}");
-   Console.WriteLine ($"b={b}");
-}
+void SwapTwoValues (ref int a, ref int b) => (a, b) = (b, a);
