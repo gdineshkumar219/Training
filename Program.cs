@@ -1,5 +1,9 @@
-﻿if (!int.TryParse (args[0], out int value)) {
-   Console.WriteLine ("Invalid input.Please enter an integer.");
+﻿if (args.Length == 0) {
+   Console.WriteLine ("Please provide a positive integer as input.");
+   return;
+}
+if (!int.TryParse (args[0], out int value) || value <= 0) {
+   Console.WriteLine ("Invalid input. Please enter a positive integer.");
    return;
 }
 int result = CalculateNthArmstrong (value);
@@ -17,7 +21,7 @@ static int CalculateNthArmstrong (int n) {
 
 static bool IsArmstrong (int num) {
    int originalNum = num;
-   int numDigits = (int)Math.Log10 (num) + 1;
+   int numDigits = num.ToString ().Length;
    int sum = 0;
    while (num > 0) {
       int digit = num % 10;
