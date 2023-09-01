@@ -1,9 +1,9 @@
-﻿string[] wordArray = { "a", "ab", "abc", "abcdefg", "adtfiwft" };
+﻿string[] wordArray = { "ab", "pqrstuvw", "abd", "defg", "jrvgnk" };
 Console.WriteLine ($"The longest Abecedarian word present is {GetLongestAbecedarian (wordArray)}.");
 
 static string GetLongestAbecedarian (string[] wordArray) {
-   if (!wordArray.Any ()) return "";
    string result = "";
+   if (wordArray == null || !wordArray.Any ()) return "";
    foreach (string word in wordArray) {
       char[] chars = word.ToCharArray ();
       Array.Sort (chars);
