@@ -9,4 +9,4 @@ int GetIntegerInput () {
    }
 }
 
-int CalculateFactorial (int n) => Enumerable.Range (1, n).Aggregate (1, (p, item) => p * item);
+int CalculateFactorial (int n) => Enumerable.Range (1, n).Aggregate ((p, item) => p * item);
