@@ -8,16 +8,12 @@ decimal GetInput () {
       Console.WriteLine ("Invalid input. Please enter a valid decimal number");
    }
 }
+
 void DisplayParts (decimal number) {
-   decimal integralPart = Math.Floor (number);
-   decimal fractionalPart = number - integralPart;
-   Console.WriteLine ($"Integral part: {GetDigits (integralPart)}");
-   Console.WriteLine ($"Fractional part: {GetDigits (fractionalPart)}");
+   string integralDigits = string.Join (" ", Math.Floor (number).ToString ().ToCharArray ());
+   string fractionalDigits = string.Join (" ", GetFractionalDigits (number));
+   Console.WriteLine ($"Integral part: {integralDigits}");
+   Console.WriteLine ($"Fractional part: {fractionalDigits}");
 }
 
-string GetDigits (decimal number) {
-   string digits = "";
-   string numberString = number.ToString ("");
-   foreach (char digitChar in numberString) if (char.IsDigit (digitChar) || digitChar == '.') digits += digitChar + " ";
-   return digits.Trim ();
-}
+char[] GetFractionalDigits (decimal number) => (number.ToString ().Contains ('.') ? number.ToString ().Split ('.')[1] : "0").ToCharArray ();
