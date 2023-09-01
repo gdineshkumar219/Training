@@ -3,7 +3,7 @@ Console.WriteLine ($"The longest Abecedarian word present is {GetLongestAbecedar
 
 static string GetLongestAbecedarian (string[] wordArray) {
    string result = "";
-   if (wordArray == null || !wordArray.Any ()) return "";
+   if (wordArray == null || !wordArray.Any ()) return result;
    foreach (string word in wordArray) {
       char[] chars = word.ToCharArray ();
       Array.Sort (chars);
