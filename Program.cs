@@ -1,5 +1,5 @@
 ﻿int input = GetIntegerInput ();
-Console.WriteLine ($"The factorial of {input}! is {CalculateFactorial (input)}");
+Console.WriteLine ($"{input}! is {CalculateFactorial (input)}");
 
 int GetIntegerInput () {
    while (true) {
