@@ -10,10 +10,13 @@ decimal GetInput () {
 }
 
 void DisplayParts (decimal number) {
-   string integralDigits = string.Join (" ", Math.Floor (number).ToString ().ToCharArray ());
-   string fractionalDigits = string.Join (" ", GetFractionalDigits (number));
-   Console.WriteLine ($"Integral part: {integralDigits}");
-   Console.WriteLine ($"Fractional part: {fractionalDigits}");
+   decimal integralPart = Math.Floor (number);
+   decimal fractionalPart = number - integralPart;
+   Console.WriteLine ($"Integral part: {GetDigits (integralPart)}");
+   Console.WriteLine ($"Fractional part: {GetDigits (fractionalPart)}");
 }
 
-char[] GetFractionalDigits (decimal number) => (number.ToString ().Contains ('.') ? number.ToString ().Split ('.')[1] : "0").ToCharArray ();
+string GetDigits (decimal part) {
+   string partStr = part.ToString ();
+   return partStr.Contains ('.') ? string.Join (' ', partStr.Replace ("0.", "").ToCharArray ()) : string.Join (' ', partStr.ToCharArray ());
+}
