@@ -1,54 +1,17 @@
-﻿using System.Text;
-System.Console.OutputEncoding = new UnicodeEncoding ();
+﻿using static System.Console;
+OutputEncoding = System.Text.Encoding.UTF8;
+WriteLine ("\u250C" + string.Concat (Enumerable.Repeat ("\u2500\u2500\u2500\u252C", 7)) + "\u2500\u2500\u2500\u2510");
+WriteLine ("\u2502 \u265C \u2502 \u265E \u2502 \u265D \u2502 \u265B \u2502 \u265A \u2502 \u265D \u2502 \u265E \u2502 \u265C \u2502");
+WriteLine (BlankRows () + "\n" + string.Concat (Enumerable.Repeat ("\u2502 \u265F ", 8)) + "\u2502");
+Write (string.Concat (Enumerable.Repeat ($"{BlankRows ()} \n{MiddleLines ()}\n", 4)));
+WriteLine (BlankRows () + "\n" + string.Concat (Enumerable.Repeat ("\u2502 \u2659 ", 8)) + "\u2502");
+WriteLine (BlankRows () + "\n\u2502 \u2656 \u2502 \u2658 \u2502 \u2657 \u2502 \u2655 \u2502 \u2654 \u2502 \u2657 \u2502 \u2658 \u2502 \u2656 \u2502");
+WriteLine ("\u2514" + string.Concat (Enumerable.Repeat ("\u2500\u2500\u2500\u2534", 7)) + "\u2500\u2500\u2500\u2518");
 
-for (int i = 1; i <= 8; i++) {
-   PrintGrid (i);
-   Console.WriteLine ();
-   for (int j = 1; j <= 8; j++) {
-      if (j != 9) Console.Write ('\u2502');
-      DisplayChessCoins (i, j);
-   }
-   Console.Write ('\u2502' + "\n");
-   if (i != 8) Console.Write ('\u251C');
-}
-PrintGrid (9);
-
-void PrintGrid (int row) {
-   if (row == 1) Console.Write ('\u250C');
-   if (row == 9) Console.Write ('\u2514');
-   for (int i = 1; i <= 8; i++) {
-      switch (row) {
-         case 1:
-            Console.Write ('\u2500'); Console.Write ('\u2500');
-            Console.Write (i == 8 ? '\u2510' : '\u252C'); break;
-         case 9:
-            Console.Write ('\u2500'); Console.Write ('\u2500');
-            Console.Write (i == 8 ? '\u2518' : '\u2534'); break;
-         default:
-            Console.Write ('\u2500'); Console.Write ('\u2500');
-            Console.Write (i == 8 ? '\u2524' : '\u253C'); break;
-      }
-   }
+string BlankRows () {
+   string middleRow = "\u2500\u2500\u2500\u253C";
+   string middleCorner = "\u2500\u2500\u2500\u2524";
+   return ("\u251C" + string.Concat (Enumerable.Repeat (middleRow, 7)) + middleCorner);
 }
 
-void DisplayChessCoins (int i, int j) {
-   switch (i) {
-      case 1:
-         if (j is 1 or 8) Console.Write (" " + '\u2656');
-         else if (j is 3 or 6) Console.Write (" " + '\u2657');
-         else if (j is 2 or 7) Console.Write (" " + '\u2658');
-         else if (j == 4) Console.Write (" " + '\u2655');
-         else if (j == 5) Console.Write (" " + '\u2654');
-         break;
-      case 2: Console.Write (" " + '\u2659'); break;
-      case 7: Console.Write (" " + '\u265F'); break;
-      case 8:
-         if (j is 1 or 8) Console.Write (" " + '\u265C');
-         else if (j is 3 or 6) Console.Write (" " + '\u265D');
-         else if (j is 2 or 7) Console.Write (" " + '\u265E');
-         else if (j == 4) Console.Write (" " + '\u265B');
-         else if (j == 5) Console.Write (" " + '\u265A');
-         break;
-      default: Console.Write (" " + " "); break;
-   }
-}
+string MiddleLines () => string.Concat (Enumerable.Repeat ("\u2502   ", 8)) + "\u2502";
