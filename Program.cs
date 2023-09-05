@@ -1,4 +1,5 @@
 ﻿using static System.Console;
+
 OutputEncoding = System.Text.Encoding.UTF8;
 WriteLine ("\u250C" + string.Concat (Enumerable.Repeat ("\u2500\u2500\u2500\u252C", 7)) + "\u2500\u2500\u2500\u2510");
 WriteLine ("\u2502 \u265C \u2502 \u265E \u2502 \u265D \u2502 \u265B \u2502 \u265A \u2502 \u265D \u2502 \u265E \u2502 \u265C \u2502");
