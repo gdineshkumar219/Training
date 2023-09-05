@@ -10,6 +10,7 @@ int pos2 = GetIndexInput ("Enter the value of index2: ");
 ToSwap (numArray, pos1, pos2);
 Console.WriteLine ("\nArray after swapping: ");
 PrintArray (numArray);
+
 void PrintArray (int[] arr) => Console.Write (string.Join ($"\t", arr));
 
 int GetIntegerInput (string prompt) {
