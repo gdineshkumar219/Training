@@ -18,5 +18,6 @@ void DisplayParts (decimal number) {
 
 string GetDigits (decimal part) {
    string partStr = part.ToString ();
-   return partStr.Contains ('.') ? string.Join (' ', partStr.Replace ("0.", "").ToCharArray ()) : string.Join (' ', partStr.ToCharArray ());
+   if (partStr.Contains ('.')) partStr = partStr.Replace ("0.", "");
+   return string.Join (' ', partStr.ToCharArray ());
 }
