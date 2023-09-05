@@ -1,15 +1,16 @@
-﻿int n = GetIntegerInput ("Enter the number of integers: ");
-int[] numbers = new int[n];
+﻿int n = GetIntegerInput ("Enter the length of an array: ");
+int[] numArray = new int[n];
 Random random = new ();
-for (int i = 0; i < n; i++) numbers[i] = random.Next (10);
+for (int i = 0; i < n; i++) numArray[i] = random.Next (10);
 Console.WriteLine ("\nArray before swapping: ");
-foreach (var c in numbers) Console.Write ($"{c}\t");
+PrintArray (numArray);
 Console.WriteLine ($"\n\nEnter the index to be swapped (between 0 to {n - 1}). ");
 int pos1 = GetIndexInput ("Enter the value of index1: ");
 int pos2 = GetIndexInput ("Enter the value of index2: ");
-ToSwap (numbers, pos1, pos2);
+ToSwap (numArray, pos1, pos2);
 Console.WriteLine ("\nArray after swapping: ");
-foreach (var ch in numbers) Console.Write ($"{ch}\t");
+PrintArray (numArray);
+void PrintArray (int[] arr) => Console.Write (string.Join ($"\t", arr));
 
 int GetIntegerInput (string prompt) {
    while (true) {
