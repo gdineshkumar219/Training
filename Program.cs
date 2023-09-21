@@ -1,32 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-
-/// <summary>
-/// Solves the N-Queens problem for ordinary and super queens and provides options to display unique or all solutions.
-/// </summary>
+﻿/// <summary>Solves the N-Queens problem for ordinary and super queens and provides options to display unique or all solutions.</summary>
 class Program {
-   static void Main (string[] args) {
+   static void Main () {
       Console.OutputEncoding = System.Text.Encoding.UTF8;
       Console.WriteLine ("N-QUEENS PROBLEM");
-      int noOfQueens = GetIntegerInput ();
-      int[] chessBoard = new int[noOfQueens + 1];
-      List<int[]> allSolutions = new ();
+      int cQueens = GetInput ();
+      int[] chessBoard = new int[cQueens + 1];
+      List<int[]> slns = new ();
       int soln = 0;
       Console.WriteLine ("Select your queen to be (o)rdinary queeen or (s)uper queen?");
       var queenKey = Console.ReadKey (true).KeyChar;
       Console.WriteLine ("You want to see (u)nique solutions or (a)ll solutions.");
       var key = Console.ReadKey (true).KeyChar;
-      bool solutionFound = false;
+      bool found = false;
       NQueenSolver (1);
-      if (!solutionFound) Console.WriteLine ($"{noOfQueens} queens cannot be placed. They attack each other.");
+      if (!found) Console.WriteLine ($"{cQueens} queens cannot be placed. They attack each other.");
 
       /// <summary>Gets an integer input from the user.</summary>
       /// <returns>The integer input from the user.</returns>
-      int GetIntegerInput () {
+      int GetInput () {
          while (true) {
             Console.Write ("\nEnter the number of queens to be placed: ");
             if (int.TryParse (Console.ReadLine (), out int value) && value > 0) return value;
-            else Console.WriteLine ("Invalid input.Please enter a valid input");
+            Console.WriteLine ("Invalid input.Please enter a valid input");
          }
       }
 
@@ -43,7 +38,7 @@ class Program {
             foreach (var move in superQueenMoves) {
                int newX = col + move.Item1;
                int newY = rows + move.Item2;
-               if (newX >= 1 && newX <= noOfQueens && newY >= 1 && newY <= rows - 1 && chessBoard[newY] == newX) return false;
+               if (newX >= 1 && newX <= cQueens && newY >= 1 && newY <= rows - 1 && chessBoard[newY] == newX) return false;
             }
          }
          return true;
@@ -52,12 +47,12 @@ class Program {
       /// <summary>Solves the N-Queens problem using backtracking.</summary>
       /// <param name="rows">The current row to place the queen.</param>
       void NQueenSolver (int rows) {
-         for (int i = 1; i <= noOfQueens; i++) {
+         for (int i = 1; i <= cQueens; i++) {
             if (IsQueenSafe (rows, i)) {
                chessBoard[rows] = i;
-               if (rows == noOfQueens) {
+               if (rows == cQueens) {
                   PrintSolution ();
-                  solutionFound = true;
+                  found = true;
                } else NQueenSolver (rows + 1);
             }
 
@@ -69,9 +64,9 @@ class Program {
          if (key == 'a') DisplayBoard ();
          else {
             bool isIdentical = false;
-            int[] solution = new int[noOfQueens + 1];
-            for (int i = 1; i <= noOfQueens; i++) solution[i] = chessBoard[i];
-            foreach (var existingSoln in allSolutions) {
+            int[] solution = new int[cQueens + 1];
+            for (int i = 1; i <= cQueens; i++) solution[i] = chessBoard[i];
+            foreach (var existingSoln in slns) {
                if (AreSolutionsIdentical (solution, existingSoln)) {
                   isIdentical = true;
                   break;
@@ -88,7 +83,7 @@ class Program {
       bool AreSolutionsIdentical (int[] solution1, int[] solution2) {
          for (int rotation = 0; rotation < 4; rotation++) {
             for (int mirror = 0; mirror < 2; mirror++) {
-               if (AreSolutionsEqual (solution1, solution2)) return true;
+               if (solution1.SequenceEqual(solution2)) return true;
                RotateSolution (solution1);
                if (mirror == 1) MirrorSolution (solution1);// Apply a mirror to solution1       
             }
@@ -113,36 +108,26 @@ class Program {
          for (int i = 1; i <= n / 2; i++) (solution[i], solution[n - i + 1]) = (solution[n - i + 1], solution[i]);
       }
 
-      /// <summary>Checks if two solutions to the N-Queens problem are equal.</summary>
-      /// <param name="solution1">The first solution.</param>
-      /// <param name="solution2">The second solution.</param>
-      /// <returns>True if the solutions are equal, otherwise false.</returns>
-      bool AreSolutionsEqual (int[] solution1, int[] solution2) {
-         int n = solution1.Length - 1;
-         for (int i = 1; i <= n; i++) if (solution1[i] != solution2[i]) return false;
-         return true;
-      }
-
       /// <summary>Displays the chessboard for a valid N-Queens solution.</summary>
       void DisplayBoard () {
-         int[] solution = new int[noOfQueens + 1];
-         for (int i = 1; i <= noOfQueens; i++) solution[i] = chessBoard[i];
-         allSolutions.Add (solution);
+         int[] solution = new int[cQueens + 1];
+         for (int i = 1; i <= cQueens; i++) solution[i] = chessBoard[i];
+         slns.Add (solution);
          Console.WriteLine ($"Solution: {++soln}");
-         for (int i = 1; i <= noOfQueens; i++) Console.Write ("┌───");
+         for (int i = 1; i <= cQueens; i++) Console.Write ("┌───");
          Console.WriteLine ("┐");
-         for (int i = 1; i <= noOfQueens; i++) {
-            for (int j = 1; j <= noOfQueens; j++) {
+         for (int i = 1; i <= cQueens; i++) {
+            for (int j = 1; j <= cQueens; j++) {
                if (j == solution[i]) Console.Write ("│ ♕ ");
                else Console.Write ("│   ");
             }
             Console.WriteLine ("│");
-            if (i < noOfQueens) {
-               for (int j = 1; j <= noOfQueens; j++) Console.Write ("├───");
+            if (i < cQueens) {
+               for (int j = 1; j <= cQueens; j++) Console.Write ("├───");
                Console.WriteLine ("┤");
             }
          }
-         for (int i = 1; i <= noOfQueens; i++) Console.Write ("└───");
+         for (int i = 1; i <= cQueens; i++) Console.Write ("└───");
          Console.WriteLine ("┘");
       }
    }
