@@ -83,7 +83,7 @@ class Program {
       bool AreSolutionsIdentical (int[] solution1, int[] solution2) {
          for (int rotation = 0; rotation < 4; rotation++) {
             for (int mirror = 0; mirror < 2; mirror++) {
-               if (solution1.SequenceEqual(solution2)) return true;
+               if (solution1.SequenceEqual (solution2)) return true;
                RotateSolution (solution1);
                if (mirror == 1) MirrorSolution (solution1);// Apply a mirror to solution1       
             }
