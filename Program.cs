@@ -1,8 +1,8 @@
-﻿
+﻿namespace Training {
 
-namespace Training {
    /// <summary>A program for calculating the number of chocolates that can be bought with a given inputs and the number of wrappers required for an extra chocolate.</summary>
    internal class Program {
+
       /// <summary>The entry point of the program.</summary>
       static void Main () {
          string xPrompt = "Enter the amount of money: ";
@@ -16,6 +16,7 @@ namespace Training {
          Console.WriteLine ($"Output:(C = {chocolates}, X = {remainingMoney}, W = {remainingWrappers})");
          Console.WriteLine ($"You can get {chocolates} chocolates, have {remainingMoney} leftover money, and {remainingWrappers} wrappers remaining.");
       }
+
       /// <summary>Gets an integer input from the user.</summary>
       /// <param name="prompt">The prompt message displayed to the user.</param>
       /// <returns>The integer input from the user.</returns>
@@ -26,6 +27,7 @@ namespace Training {
             Console.WriteLine ("Invalid input. Please enter an integer.");
          }
       }
+
       /// <summary>Calculates the number of chocolates that can be bought with the given money, the remaining money, and the remaining wrappers.</summary>
       /// <param name="money">The amount of money available.</param>
       /// <param name="pricePerChocolate">The price per chocolate.</param>
