@@ -5,7 +5,8 @@
       static void Main () {
          Console.WriteLine ("Vote counting");
          string input = GetInput ("Enter the input string: ");
-         Console.WriteLine ($"{FindWinner (input).Item1} won by getting {FindWinner (input).Item2} votes");
+         var winner = FindWinner (input);
+         Console.WriteLine ($"{winner.Item1} won by getting {winner.Item2} votes");
       }
 
       /// <summary>Prompts the user for a string input containing letters only</summary>
@@ -28,9 +29,8 @@
          var voteCount = new Dictionary<char, int> ();
          foreach (char ch in input.ToLower ()) voteCount[ch] = voteCount.TryGetValue (ch, out int value) ? value + 1 : 1;
          int maxVotes = voteCount.Values.Max ();
-         char winner = voteCount.First (kv => kv.Value == maxVotes).Key;
-         var cVotes = voteCount[winner];
-         return (winner, cVotes);
+         var kv = voteCount.MaxBy (a => a.Value);
+         return (kv.Key, kv.Value);
       }
    }
 }
