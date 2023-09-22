@@ -27,8 +27,8 @@
       /// <returns>A tuple containing the winner character and the number of votes</returns>
       static (char, int) FindWinner (string input) {
          var voteCount = new Dictionary<char, int> ();
-         foreach (char ch in input.ToLower ()) voteCount[ch] = voteCount.TryGetValue (ch, out int value) ? value + 1 : 1;
-         int maxVotes = voteCount.Values.Max ();
+         foreach (char ch in input.ToLower ())
+            voteCount[ch] = voteCount.TryGetValue (ch, out int value) ? ++value : 1;
          var kv = voteCount.MaxBy (a => a.Value);
          return (kv.Key, kv.Value);
       }
