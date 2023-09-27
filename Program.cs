@@ -22,8 +22,8 @@
             }
          }
 
-         /// <summary>Prompts the user for the desired sort order and returns it.</summary>
-         /// <returns>The sort order ("ascending" or "descending").</returns>
+         ///<summary>Prompts the user to choose whether to sort the array in descending order.</summary>
+         /// <returns><c>true<c/>if the user chooses to sort in descending order; otherwise, <c>false</c></returns>
          static bool IsDescending () {
             Console.WriteLine ("Do you want to sort the array in descending order? (y)es or (n)o");
             return Console.ReadKey (true).KeyChar == 'y';
@@ -38,10 +38,10 @@
             return specialChar;
          }
 
-         /// <summary>Sorts characters, filters out a special character, and appends it to the result.</summary>
+         /// <summary>Sorts characters, filters out a special character and appends it to the result.</summary>
          /// <param name="characters">An array of characters to be sorted.</param>
          /// <param name="specialChar">The special character to be filtered out and appended.</param>
-         /// <param name="sortOrder">The desired sort order ("ascending" or "descending"). Default is "ascending".</param>
+         /// <param name="isDescending">A boolean value indicating whether the order should be ascending(false) or descending(true)</param>
          /// <returns>The sorted characters with the special character appended.</returns>
          static string SortAndAddSpecialCharToEnd (char[] arr, char spl, bool isDescending = false) {
             char[] filteredArr = arr.Where (c => c != spl).ToArray ();
