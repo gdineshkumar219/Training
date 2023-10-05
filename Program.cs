@@ -10,12 +10,14 @@ internal class Program {
       List<int[]> slns = new ();
       var queenType = GetQueenType ();
       var slnType = GetSolutionType ();
-      bool found = NQueenSolver (chessBoard, slns, queenType, slnType, 0);
+      bool found = NQueenSolver (chessBoard, slns, queenType, 0);
       if (!found) {
          Console.ForegroundColor = ConsoleColor.Red;
          Console.WriteLine ($"{cQueens} queens cannot be placed. They attack each other.");
          Console.ResetColor ();
       }
+      if (slnType == 'u') UniqueSolution (slns);
+      for (int i = 0; i < slns.Count; i++) DisplayBoard (slns[i], i + 1);
    }
 
    /// <summary>Gets the number of queens to be placed from user input</summary>
@@ -70,47 +72,34 @@ internal class Program {
    }
 
    /// <summary>Solves the N-Queens problem using backtracking</summary>
-   /// <param name="chessBoard">The current state of the chess board</param>
+   /// <param name="chessBoard">The current state of the chess board.</param>
    /// <param name="slns">A list to store solutions.</param>
-   /// <param name="queenType">The type of queen ('o' for ordinary, 's' for super)</param>
-   /// <param name="slnType">The type of solutions to display ('u' for unique, 'a' for all)</param>
+   /// <param name="queenType">The type of queen ('o' for ordinary, 's' for super).</param>
    /// <param name="rows">The current row to place queens.</param>
    /// <returns>True if a solution is found, false otherwise.</returns>
-   static bool NQueenSolver (int[] chessBoard, List<int[]> slns, char queenType, char slnType, int rows) {
+   static bool NQueenSolver (int[] chessBoard, List<int[]> slns, char queenType, int rows) {
       if (rows == chessBoard.Length) {
-         PrintSolution (chessBoard, slns, slnType);
+         int[] solution = new int[chessBoard.Length];
+         Array.Copy (chessBoard, solution, chessBoard.Length);
+         slns.Add (solution);
          return true;
       }
       bool found = false;
       for (int i = 0; i < chessBoard.Length; i++) {
          if (IsQueenSafe (chessBoard, rows, i, queenType)) {
             chessBoard[rows] = i;
-            found = NQueenSolver (chessBoard, slns, queenType, slnType, rows + 1) || found;
+            found = NQueenSolver (chessBoard, slns, queenType, rows + 1) || found;
          }
       }
       return found;
    }
 
-   /// <summary>Prints a chessboard with queen placements for a solution</summary>
-   /// <param name="chessBoard">The current state of the chess board</param>
-   /// <param name="slns">A list of solutions</param>
-   /// <param name="slnType">The type of solutions to display ('u' for unique, 'a' for all)</param>
-   /// <param name="soln">The solution number</param>
-   static void PrintSolution (int[] chessBoard, List<int[]> slns, char slnType) {
-      if (slnType == 'a') {
-         DisplayBoard (chessBoard, slns, chessBoard.Length, slns.Count + 1);
-      } else {
-         bool isIdentical = false;
-         foreach (var s in slns) {
-            if (AreSolutionsIdentical (chessBoard, s)) {
-               isIdentical = true;
-               break;
-            }
-         }
-         if (!isIdentical) {
-            DisplayBoard (chessBoard, slns, chessBoard.Length, slns.Count + 1);
-         }
-      }
+   /// <summary>Removes duplicate solutions from the list of solutions</summary>
+   /// <param name="solutions">The list of solutions.</param>
+   static void UniqueSolution (List<int[]> solutions) {
+      for (int i = 0; i < solutions.Count - 1; i++)
+         for (int j = i + 1; j < solutions.Count; j++)
+            if (AreSolutionsIdentical (solutions[i], solutions[j])) solutions.RemoveAt (j--);
    }
 
    /// <summary>Checks if two solutions are identical, considering rotations and mirrors</summary>
@@ -119,12 +108,9 @@ internal class Program {
    /// <returns>True if the solutions are identical, false otherwise</returns>
    static bool AreSolutionsIdentical (int[] solution1, int[] solution2) {
       for (int rotation = 0; rotation < 4; rotation++) {
-         for (int mirror = 0; mirror < 2; mirror++) {
-            if (solution1.SequenceEqual (solution2)) return true;
-            solution1 = RotateSolution (solution1);
-            if (mirror == 1) MirrorSolution (solution1);
-         }
-         solution2 = RotateSolution (solution2);
+         solution1 = RotateSolution (solution1);
+         if (solution2.SequenceEqual (solution1)) return true;
+         if (solution2.SequenceEqual (MirrorSolution (solution1))) return true;
       }
       return false;
    }
@@ -139,34 +125,20 @@ internal class Program {
       return rotatedSolution;
    }
 
-   /// <summary>Mirrors a solution horizontally</summary>
-   /// <param name="solution">The solution to mirror</param>
-   static void MirrorSolution (int[] solution) {
-      int n = solution.Length;
-      for (int i = 0; i < n / 2; i++) (solution[i], solution[n - i - 1]) = (solution[n - i - 1], solution[i]);
-   }
+   /// <summary>Mirrors a solution</summary>
+   /// <param name="solution">The solution to mirror.</param>
+   static int[] MirrorSolution (int[] solution) => solution.Reverse ().ToArray ();
 
    /// <summary>Displays a chessboard with queen placements for a solution</summary>
-   /// <param name="chessBoard">The current state of the chess board</param>
-   /// <param name="slns">A list of solutions</param>
-   /// <param name="cQueens">The number of queens on the board</param>
-   /// <param name="soln">The solution number</param>
-   static void DisplayBoard (int[] chessBoard, List<int[]> slns, int cQueens, int soln) {
-      int[] solution = new int[cQueens];
-      for (int i = 0; i < cQueens; i++) solution[i] = chessBoard[i];
-      slns.Add (solution);
-      Console.WriteLine ($"Solution: {soln}");
+   /// <param name="solutionIndex">The solution number.</param>
+   static void DisplayBoard (int[] solution, int solutionIndex) {
+      int cQueens = solution.Length;
+      Console.WriteLine ($"Solution: {solutionIndex}");
       for (int i = 0; i < cQueens; i++) {
          for (int j = 0; j < cQueens; j++) {
-            if ((i + j) % 2 == 0) {
-               Console.BackgroundColor = ConsoleColor.White;
-               Console.ForegroundColor = ConsoleColor.Black;
-            } else {
-               Console.BackgroundColor = ConsoleColor.Black;
-               Console.ForegroundColor = ConsoleColor.White;
-            }
-            if (j == solution[i]) Console.Write ("♕ ");
-            else Console.Write ("  ");
+            Console.BackgroundColor = ((i + j) % 2 == 0) ? ConsoleColor.White : ConsoleColor.Black;
+            Console.ForegroundColor = ((i + j) % 2 == 0) ? ConsoleColor.Black : ConsoleColor.White;
+            Console.Write (j == solution[i] ? "♕ " : "  ");
             Console.ResetColor ();
          }
          Console.WriteLine ();
