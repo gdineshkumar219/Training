@@ -97,7 +97,7 @@
       /// <summary>Entry Point of the program</summary>
       static void Main () {
          MyList<char> myList = new ();
-         myList.Add ('a');
+         myList.Insert (0,'a');
          myList.Add ('a');
          myList.Add ('b');
          myList.Insert (3, 'c');
