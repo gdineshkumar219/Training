@@ -15,7 +15,7 @@ internal class Program {
       NQueenSolver (0);
       if (slns.Count == 0) {
          Console.ForegroundColor = ConsoleColor.Red;
-         Console.WriteLine ($"{cQueens} cannnot be placed. They attack each other.");
+         Console.WriteLine ($"{cQueens} queens cannnot be placed. They attack each other.☠");
          Console.ResetColor ();
       }
       DisplayBoard ();
@@ -124,7 +124,7 @@ internal class Program {
       while (k < slns.Count) {
          var solution = slns[k];
          Console.Clear ();
-         Console.WriteLine ($"Solution: {k + 1} of {slns.Count}");
+         Console.WriteLine ($"Solution: {k + 1}☟ of {slns.Count}");
          for (int i = 0; i < cQueens; i++) {
             for (int j = 0; j < cQueens; j++) {
                var black = ConsoleColor.Black;
@@ -133,7 +133,7 @@ internal class Program {
                var fg = (bg == ConsoleColor.White) ? black : white;
                Console.BackgroundColor = bg;
                Console.ForegroundColor = fg;
-               Console.Write (j == solution[i] ? "♕ " : "  ");
+               Console.Write (j == solution[i] ? "♛ " : "  ");
                Console.ResetColor ();
             }
             Console.WriteLine ();
