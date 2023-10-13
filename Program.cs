@@ -1,34 +1,46 @@
-﻿namespace Training {
+﻿// ---------------------------------------------------------------------------------------
+// Training ~ A training program for new joinees at Metamation, Batch- July 2023.
+// Copyright (c) Metamation India.                                                
+// ---------------------------------------------------------------------------
+// Program.cs                                                                     
+// Program to Implement a Stack<T> class using arrays as the underlying data structure.
+// The Stack<T> should start with an initial capacity of 4 and double its capacity when needed.
+// class TStack<T> {
+//    public void Push (T item) { }
+//    public T Pop () { }
+//    public T Peek () { }
+//    public bool IsEmpty { get; }
+// }
+// ---------------------------------------------------------------------------------------
+namespace Training {
+   #region TStack<T> ---------------------------------------------------------------------
    class TStack<T> {
-      private T[] mArr;
-      private int mCapacity = 4, mCount = 0;
-
+      T[] mArr;
+      int mCapacity = 4, mCount = 0;
+      #region Method ----------------------------------------------------------------------
       /// <summary>Pushes an element onto the stack</summary>
       /// <param name="item">The item to be pushed onto the stack</param>
       public void Push (T item) {
-         try {
-            ModifyCapacity ();
-            mArr[mCount++] = item;
-         } catch (IndexOutOfRangeException) { throw new IndexOutOfRangeException (); }
+         ModifyCapacity ();
+         mArr[mCount++] = item;
       }
 
       /// <summary>Removes and returns the top element from the stack</summary>
       public T Pop () {
-            if (IsEmpty) throw new InvalidOperationException ("Cannot pop from an empty stack.");
-            T item = mArr[--mCount];
-            mArr[mCount] = default;
-            ModifyCapacity ();
-            return item;
+         if (IsEmpty) throw new InvalidOperationException ("Cannot pop from an empty stack.");
+         T item = mArr[--mCount];
+         mArr[mCount] = default;
+         ModifyCapacity ();
+         return item;
       }
 
       /// <summary>Returns the top element of the stack without removing it</summary>
       /// <returns>Top element of the stack</returns>
-      /// <exception cref="InvalidOperationException"></exception>
       public T Peek () {
-            if (IsEmpty) throw new InvalidOperationException ("Cannot peek an empty stack.");
-            T item = Pop ();
-            Push(item);
-            return item;
+         if (IsEmpty) throw new InvalidOperationException ("Cannot peek an empty stack.");
+         T item = Pop ();
+         Push (item);
+         return item;
       }
 
       /// <summary>Gets a value indicating whether the stack is empty</summary>
@@ -47,10 +59,12 @@
          else if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
          Array.Resize (ref mArr, mCapacity);
       }
+      #endregion
 
       /// <summary>Initializes a new instance of the TStack class</summary>
       public TStack () => mArr = new T[mCapacity];
    }
+   #endregion
 
    internal class Program {
       static void Main () {
