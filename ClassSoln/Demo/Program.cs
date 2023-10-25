@@ -64,7 +64,7 @@ namespace Training {
       }
 
       /// <summary>Modifies the capacity based on its current count</summary>
-   int ModifyCapacity () {
+      public int ModifyCapacity () {
          if (mCount == mCapacity) mCapacity *= 2;
          else if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
          Array.Resize (ref mArr, mCapacity);
@@ -86,27 +86,6 @@ namespace Training {
    #endregion
 
    internal class Program {
-      static void Main () {
-         var tQueue = new TQueue<int> ();
-         tQueue.Enqueue (1);
-         tQueue.Enqueue (2);
-         tQueue.Enqueue (3);
-         tQueue.Enqueue (4);
-         Console.WriteLine ("TQueue Elements:");
-         while (!tQueue.IsEmpty) {
-            Console.WriteLine ("Peek: " + tQueue.Peek ());
-            Console.WriteLine ("Dequeue: " + tQueue.Dequeue ());
-         }
-         var queue = new Queue<int> ();
-         queue.Enqueue (1);
-         queue.Enqueue (2);
-         queue.Enqueue (3);
-         queue.Enqueue (4);
-         Console.WriteLine ("Built-in Queue Elements:");
-         while (queue.Count > 0) {
-            Console.WriteLine ("Peek: " + queue.Peek ());
-            Console.WriteLine ("Dequeue: " + queue.Dequeue ());
-         }
-      }
+      static void Main () { }
    }
 }
