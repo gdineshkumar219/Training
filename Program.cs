@@ -3,8 +3,8 @@
 // Copyright (c) Metamation India.                                                
 // ---------------------------------------------------------------------------
 // Program.cs                                                                     
-// Program to Implement a Stack<T> class using arrays as the underlying data structure.
-// The Stack<T> should start with an initial capacity of 4 and double its capacity when needed.
+// Program to Implement a TQueue<T> class using arrays as the underlying data structure.
+// TQueue<T> should start with an initial capacity of 4 and double its capacity when needed.
 // class TQueue<T> {
 //    public void Enqueue (T a) { } 
 //    public T Dequeue () { }
@@ -104,7 +104,7 @@ namespace Training {
          for (int i = 0; i < 10; i++) tQueue.Enqueue (i + 1);
          Console.WriteLine ("Count: " + tQueue.Count ());
          Console.WriteLine ("Element at index 5: " + tQueue[5]);
-         Console.WriteLine ("-------------------------------\n");
+         Console.WriteLine ("--------------------------------\n");
       }
 
       /// <summary>Tests the custom built-in Queue class</summary>
@@ -118,8 +118,8 @@ namespace Training {
          Console.WriteLine ("Is Empty: " + (queue.Count == 0));
          for (int i = 0; i < 10; i++) queue.Enqueue (i + 1);
          Console.WriteLine ("Count: " + queue.Count);
-         Console.WriteLine ("Element at index 5: " + queue.ElementAt(5));
-         Console.WriteLine ("-------------------------------");
+         Console.WriteLine ("Element at index 5: " + queue.ElementAt (5));
+         Console.WriteLine ("--------------------------------");
       }
       #endregion
    }
