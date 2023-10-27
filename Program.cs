@@ -12,12 +12,16 @@
 //    public bool IsEmpty { get; }
 // }
 // ---------------------------------------------------------------------------------------
+
 namespace Training {
    #region TStack<T> ---------------------------------------------------------------------
    class TStack<T> {
-      T[] mArr;
-      int mCapacity = 4, mCount = 0;
-      #region Method ----------------------------------------------------------------------
+      #region Constructor -------------------------------------------
+      /// <summary>Initializes a new instance of the TStack class</summary>
+      public TStack () => mArr = new T[mCapacity];
+      #endregion
+
+      #region Methods ----------------------------------------------------------------------
       /// <summary>Pushes an element onto the stack</summary>
       /// <param name="item">The item to be pushed onto the stack</param>
       public void Push (T item) {
@@ -61,33 +65,36 @@ namespace Training {
       }
       #endregion
 
-      /// <summary>Initializes a new instance of the TStack class</summary>
-      public TStack () => mArr = new T[mCapacity];
+      #region Private Fields ---------------------------------------- 
+      T[] mArr;
+      int mCapacity = 4, mCount = 0;
+      #endregion
    }
    #endregion
 
    internal class Program {
       static void Main () {
-         var intTStack = new TStack<int> ();
-         intTStack.Push (1);
-         intTStack.Push (2);
-         intTStack.Push (3);
-         Console.WriteLine ($"First Pop using TStack: {intTStack.Pop ()}"); // 3
-         Console.WriteLine ($"Peek using Tstack: {intTStack.Peek ()}"); // 2
-         Console.WriteLine ($"Second Pop using TStack: {intTStack.Pop ()}"); // 2
-         Console.WriteLine ($"Check IsEmpty using TStack: {intTStack.IsEmpty}"); // False
-         intTStack.Clear ();
-         Console.WriteLine ($"Check IsEmpty using TStack: {intTStack.IsEmpty}"); //True
+         var tStack = new TStack<int> ();
+         tStack.Push (1);
+         tStack.Push (2);
+         tStack.Push (3);
+         Console.WriteLine ($"First Pop using TStack: {tStack.Pop ()}");
+         Console.WriteLine ($"Peek using Tstack: {tStack.Peek ()}");
+         Console.WriteLine ($"Second Pop using TStack: {tStack.Pop ()}");
+         Console.WriteLine ($"Check IsEmpty using TStack: {tStack.IsEmpty}");
+         tStack.Clear ();
+         Console.WriteLine ($"Check IsEmpty using TStack: {tStack.IsEmpty}");
          Console.WriteLine ("\n-------------------------------------------------\n");
-         var intStack = new Stack<int> ();
-         intStack.Push (1);
-         intStack.Push (2);
-         intStack.Push (3);
-         Console.WriteLine ($"First Pop using TStack: {intStack.Pop ()}"); // 3
-         Console.WriteLine ($"Peek using Tstack: {intStack.Peek ()}"); // 2
-         Console.WriteLine ($"Second Pop using TStack: {intStack.Pop ()}"); // 2
-         intStack.Clear ();
-         Console.WriteLine ($"Count: {intStack.Count}");
+         var stack = new Stack<int> ();
+         stack.Push (1);
+         stack.Push (2);
+         stack.Push (3);
+         Console.WriteLine ($"First Pop using TStack: {stack.Pop ()}");
+         Console.WriteLine ($"Peek using Tstack: {stack.Peek ()}");
+         Console.WriteLine ($"Second Pop using TStack: {stack.Pop ()}");
+         Console.WriteLine ($"Check IsEmpty using Stack: {stack.Count == 0}");
+         stack.Clear ();
+         Console.WriteLine ($"Check IsEmpty using Stack: {stack.Count == 0}");
       }
    }
 }
