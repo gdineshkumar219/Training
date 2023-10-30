@@ -19,6 +19,7 @@ namespace Training {
       /// <summary>Initializes a new instance of the <see cref="TQueue{T}"/> class</summary>
       public TQueue () => mArr = new T[mCapacity];
       #endregion
+
       #region Properties --------------------------------------------
       /// <summary>Gets or sets the element at the specified index</summary>
       /// <param name="index">The zero-based index of the element to get or set</param>
@@ -40,11 +41,12 @@ namespace Training {
       /// <summary>Gets a value indicating whether the queue is empty</summary>
       public bool IsEmpty => mCount == 0;
       #endregion
+
       #region Methods -----------------------------------------------
       /// <summary>Adds an element to the end of the queue</summary>
       /// <param name="item">The element to add to the queue</param>
       public void Enqueue (T item) {
-         ModifyCapacity ();
+         if (mCapacity == mCount) ModifyCapacity ();
          mArr[mCount++] = item;
       }
 
@@ -78,6 +80,7 @@ namespace Training {
       /// <returns>Total number of elements present</returns>
       public int Count () => mCount;
       #endregion
+
       #region Fields ------------------------------------------------
       T[] mArr;
       int mCapacity = 4, mCount = 0;
