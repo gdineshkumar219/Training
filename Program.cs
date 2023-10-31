@@ -67,7 +67,7 @@ namespace Training {
       public void Clear () {
          Array.Clear (mArr, 0, mCapacity);
          mCount = 0;
-        mCapacity = 4;
+         mCapacity = 4;
       }
 
       /// <summary>Inserts elements at the specified index</summary>
