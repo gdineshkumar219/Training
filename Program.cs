@@ -8,8 +8,6 @@
 // Throw exceptions when necessary. 
 // --------------------------------------------------------------------------------------------
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace Training {
 
    #region MyList_Class ---------------------------------------------------------------------------
@@ -50,7 +48,7 @@ namespace Training {
       /// <summary>Adds an element to the end of the list</summary>
       /// <param name="item">The element to add to the list</param>
       public void Add (T item) {
-         ModifyCapacity ();
+         if (mCount == mCapacity) ModifyCapacity ();
          mArr[mCount++] = item;
       }
 
@@ -69,7 +67,7 @@ namespace Training {
       public void Clear () {
          Array.Clear (mArr, 0, mCapacity);
          mCount = 0;
-         ModifyCapacity ();
+        mCapacity = 4;
       }
 
       /// <summary>Inserts elements at the specified index</summary>
@@ -78,7 +76,7 @@ namespace Training {
       /// <exception cref="IndexOutOfRangeException"></exception>
       public void Insert (int index, T item) {
          if (index > mCount) throw new IndexOutOfRangeException ();
-         ModifyCapacity ();
+         if (mCount == mCapacity) ModifyCapacity ();
          for (int i = mCount; i > index; i--) if (mCount != index) mArr[i] = mArr[i - 1];
          mArr[index] = item;
          mCount++;
@@ -96,8 +94,8 @@ namespace Training {
 
       /// <summary>Modifies the capacity of the list based on its current count</summary>
       void ModifyCapacity () {
-         if (mCount == mCapacity) mCapacity *= 2;
-         else if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         else mCapacity *= 2;
          Array.Resize (ref mArr, mCapacity);
       }
       #endregion
