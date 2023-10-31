@@ -20,9 +20,13 @@ namespace Training {
       /// <summary>Initializes a new instance of the TStack class</summary>
       public TStack () => mArr = new T[mCapacity];
       #endregion
+
       #region Properties --------------------------------------------
       public int Count => mCount;
       public int Capacity => mCapacity;
+
+      /// <summary>Gets a value indicating whether the stack is empty</summary>
+      public bool IsEmpty => mCount == 0;
       #endregion
 
       #region Methods ----------------------------------------------------------------------
@@ -51,9 +55,6 @@ namespace Training {
          return item;
       }
 
-      /// <summary>Gets a value indicating whether the stack is empty</summary>
-      public bool IsEmpty => mCount == 0;
-
       /// <summary>Clears the stack, removing all elements</summary>
       public void Clear () {
          Array.Clear (mArr, 0, mCapacity);
@@ -63,8 +64,8 @@ namespace Training {
 
       /// <summary>Modifies the capacity based on its current count</summary>
       void ModifyCapacity () {
-         if (mCount == mCapacity) mCapacity *= 2;
-         else if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         else mCapacity *= 2;
          Array.Resize (ref mArr, mCapacity);
       }
       #endregion
