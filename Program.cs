@@ -38,6 +38,8 @@ namespace Training {
          }
       }
 
+      public int Capacity => mCapacity;
+
       /// <summary>Gets a value indicating whether the queue is empty</summary>
       public bool IsEmpty => mCount == 0;
       #endregion
@@ -57,6 +59,7 @@ namespace Training {
             throw new InvalidOperationException ();
          T item = mArr[0];
          Array.Copy (mArr, 1, mArr, 0, --mCount);
+         ModifyCapacity ();
          return item;
       }
 
@@ -69,11 +72,10 @@ namespace Training {
       }
 
       /// <summary>Modifies the capacity based on its current count</summary>
-      int ModifyCapacity () {
-         if (mCount == mCapacity) mCapacity *= 2;
-         else if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+      void ModifyCapacity () {
+         if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         else mCapacity *= 2;
          Array.Resize (ref mArr, mCapacity);
-         return mCapacity;
       }
 
       /// <summary>Returns total elements in queue</summary>
@@ -100,13 +102,19 @@ namespace Training {
          Console.WriteLine ("Testing TQueue<T>");
          var tQueue = new TQueue<int> ();
          tQueue.Enqueue (1);
-         Console.WriteLine ("Peek: " + tQueue.Peek ());
-         int dequeuedItem = tQueue.Dequeue ();
-         Console.WriteLine ("Dequeued: " + dequeuedItem);
-         Console.WriteLine ("Is Empty: " + tQueue.IsEmpty);
+         Console.WriteLine ($"Initial capacity of queue: {tQueue.Capacity}");
          for (int i = 0; i < 10; i++) tQueue.Enqueue (i + 1);
-         Console.WriteLine ("Count: " + tQueue.Count ());
-         Console.WriteLine ("Element at index 5: " + tQueue[5]);
+         Console.WriteLine ($"Capacity after enqueuing elements: {tQueue.Capacity}");
+         Console.WriteLine ($"Peek:  {tQueue.Peek ()}");
+         Console.WriteLine ($"Dequeued: {tQueue.Dequeue ()}");
+         Console.WriteLine ($"Is Empty: {tQueue.IsEmpty}");
+         Console.WriteLine ($"Count: {tQueue.Count ()}");
+         Console.WriteLine ($"Element at index 5: {tQueue[5]}");
+         tQueue.Dequeue ();
+         tQueue.Dequeue ();
+         tQueue.Dequeue ();
+         tQueue.Dequeue ();
+         Console.WriteLine ($"Capacity afer dequeue: {tQueue.Capacity}");
          Console.WriteLine ("--------------------------------\n");
       }
 
@@ -115,14 +123,13 @@ namespace Training {
          Console.WriteLine ("Testing built-in Queue<T>");
          var queue = new Queue<int> ();
          queue.Enqueue (1);
-         Console.WriteLine ("Peek: " + queue.Peek ());
-         int dequeuedItem = queue.Dequeue ();
-         Console.WriteLine ("Dequeued: " + dequeuedItem);
-         Console.WriteLine ("Is Empty: " + (queue.Count == 0));
+         Console.WriteLine ($"Peek:  {queue.Peek ()}");
+         Console.WriteLine ($"Dequeued: {queue.Dequeue ()}");
+         Console.WriteLine ($"Is Empty: {queue.Count == 0}");
          for (int i = 0; i < 10; i++) queue.Enqueue (i + 1);
-         Console.WriteLine ("Count: " + queue.Count);
-         Console.WriteLine ("Element at index 5: " + queue.ElementAt (5));
-         Console.WriteLine ("--------------------------------");
+         Console.WriteLine ($"Count: {queue.Count ()}");
+         Console.WriteLine ($"Element at index 5: {queue.ElementAt (5)}");
+         Console.WriteLine ("--------------------------------\n");
       }
       #endregion
    }
