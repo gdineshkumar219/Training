@@ -12,6 +12,7 @@
 //    public bool IsEmpty {get;}
 //}
 // ---------------------------------------------------------------------------------------
+
 namespace Training {
    #region ClassTQueue ----------------------------------------------------------------------------
    public class TQueue<T> {
@@ -21,75 +22,91 @@ namespace Training {
       #endregion
 
       #region Properties --------------------------------------------
-      /// <summary>Gets or sets the element at the specified index</summary>
-      /// <param name="index">The zero-based index of the element to get or set</param>
-      /// <returns>The element at the specified index.</returns>
-      /// <exception cref="IndexOutOfRangeException">Thrown when the index is out of range [0, Count)</exception>
-      public T this[int index] {
-         get {
-            if (index < 0 || index >= mCount)
-               throw new IndexOutOfRangeException ($"Index {index} is out of range [0, {mCount}).");
-            return mArr[index];
-         }
-         set {
-            if (index < 0 || index >= mCount)
-               throw new IndexOutOfRangeException ($"Index {index} is out of range [0, {mCount}).");
-            mArr[index] = value;
-         }
-      }
-
+      /// <summary>Gets a capacity of the queue</summary>
       public int Capacity => mCapacity;
 
-      /// <summary>Gets a value indicating whether the queue is empty</summary>
+      /// <summary>Gets number of elements in the queue</summary>
+      public int Count () => mCount;
+
+      /// <summary>Gets a value whether the stack is empty</summary>
       public bool IsEmpty => mCount == 0;
+
+      /// <summary>Gets a value whether the stack is empty</summary>
+      public bool IsFull => mCount == mCapacity;
       #endregion
 
       #region Methods -----------------------------------------------
       /// <summary>Adds an element to the end of the queue</summary>
       /// <param name="item">The element to add to the queue</param>
       public void Enqueue (T item) {
-         if (mCapacity == mCount) ModifyCapacity ();
-         mArr[mCount++] = item;
+         if (mCount == mCapacity) ModifyCapacity ();
+         mArr[mRear] = item;
+         mRear = (mRear + 1) % mCapacity;
+         mCount++;
       }
 
       /// <summary>Removes and returns the element at the beginning of the queue</summary>
       /// <returns>The element that was removed from the beginning of the queue</returns>
+      /// <exception cref="InvalidOperationException">Thrown when the queue is empty</exception>
       public T Dequeue () {
          if (IsEmpty)
-            throw new InvalidOperationException ();
-         T item = mArr[0];
-         Array.Copy (mArr, 1, mArr, 0, --mCount);
+            throw new InvalidOperationException ("The queue is empty.");
+         T item = mArr[mFront];
+         mArr[mFront] = default;
+         mFront = (mFront + 1) % mCapacity;
+         mCount--;
          ModifyCapacity ();
          return item;
       }
 
       /// <summary>Returns the element at the beginning of the queue without removing it</summary>
       /// <returns>The element at the beginning of the queue</returns>
+      /// <exception cref="InvalidOperationException">Thrown when the queue is empty</exception>
       public T Peek () {
          if (IsEmpty)
             throw new InvalidOperationException ("The queue is empty.");
-         return mArr[0];
+         return mArr[mFront];
       }
 
-      /// <summary>Modifies the capacity based on its current count</summary>
+      /// <summary>Modifies the capacity of the queue based on its current count</summary>
       void ModifyCapacity () {
-         if (mCount <= mCapacity / 2) mCapacity = mCount < 5 ? 4 : mCapacity / 2;
-         else mCapacity *= 2;
-         Array.Resize (ref mArr, mCapacity);
+         int newCapacity;
+         if (mCount <= mCapacity / 2) newCapacity = mCount < 5 ? 4 : mCapacity / 2;
+         else newCapacity = mCapacity * 2;
+         T[] newArray = new T[newCapacity];
+         if (mFront < mRear) Array.Copy (mArr, mFront, newArray, 0, mCount);
+         else {
+            Array.Copy (mArr, mFront, newArray, 0, mCapacity - mFront);
+            Array.Copy (mArr, 0, newArray, mCapacity - mFront, mRear);
+         }
+         mArr = newArray;
+         mFront = 0;
+         mRear = mCount;
+         mCapacity = newCapacity;
       }
 
-      /// <summary>Returns total elements in queue</summary>
-      /// <returns>Total number of elements present</returns>
-      public int Count () => mCount;
+      /// <summary>Displays the elements in the queue</summary>
+      public void DisplayQueue () {
+         if (IsEmpty) {
+            Console.WriteLine ("The queue is empty.");
+            return;
+         }
+         int i = mFront;
+         Console.Write ("Elements in the queue: ");
+         do {
+            Console.Write (mArr[i] + " ");
+            i = (i + 1) % mCapacity;
+         } while (i != mRear);
+         Console.WriteLine ();
+      }
       #endregion
 
-      #region Fields ------------------------------------------------
+      #region Private Fields-----------------------------------------
       T[] mArr;
-      int mCapacity = 4, mCount = 0;
+      int mCapacity = 4, mCount = 0, mFront = 0, mRear = 0;
       #endregion
    }
    #endregion
-
    internal class Program {
       #region Methods -----------------------------------------------
       static void Main () {
@@ -102,20 +119,29 @@ namespace Training {
          Console.WriteLine ("Testing TQueue<T>");
          var tQueue = new TQueue<int> ();
          tQueue.Enqueue (1);
-         Console.WriteLine ($"Initial capacity of queue: {tQueue.Capacity}");
-         for (int i = 0; i < 10; i++) tQueue.Enqueue (i + 1);
-         Console.WriteLine ($"Capacity after enqueuing elements: {tQueue.Capacity}");
+         tQueue.DisplayQueue ();
+         for (int i = 1; i < 4; i++) tQueue.Enqueue (i * 3);
+         tQueue.DisplayQueue ();
+         Console.WriteLine ($"No of elements present: {tQueue.Count ()}");
+         Console.WriteLine ($"Capacity: {tQueue.Capacity}");
+         Console.WriteLine ($"Dequeued element:{tQueue.Dequeue ()}");
+         tQueue.DisplayQueue ();
          Console.WriteLine ($"Peek:  {tQueue.Peek ()}");
-         Console.WriteLine ($"Dequeued: {tQueue.Dequeue ()}");
-         Console.WriteLine ($"Is Empty: {tQueue.IsEmpty}");
-         Console.WriteLine ($"Count: {tQueue.Count ()}");
-         Console.WriteLine ($"Element at index 5: {tQueue[5]}");
+         tQueue.Enqueue (37);
+         tQueue.DisplayQueue ();
+         tQueue.Enqueue (19);
+         tQueue.DisplayQueue ();
+         Console.WriteLine ($"Is Queue empty: {tQueue.IsEmpty}");
+         Console.WriteLine ($"Is Queue full: {tQueue.IsFull}");
+         Console.WriteLine ($"Capacity: {tQueue.Capacity}");
          tQueue.Dequeue ();
          tQueue.Dequeue ();
          tQueue.Dequeue ();
+         tQueue.DisplayQueue ();
          tQueue.Dequeue ();
-         Console.WriteLine ($"Capacity afer dequeue: {tQueue.Capacity}");
-         Console.WriteLine ("--------------------------------\n");
+         Console.WriteLine ($"Capacity: {tQueue.Capacity}");
+         tQueue.DisplayQueue ();
+         Console.WriteLine ("----------------------------------\n");
       }
 
       /// <summary>Tests the custom built-in Queue class</summary>
@@ -123,13 +149,13 @@ namespace Training {
          Console.WriteLine ("Testing built-in Queue<T>");
          var queue = new Queue<int> ();
          queue.Enqueue (1);
+         Console.WriteLine (queue.ToString ());
+         for (int i = 0; i < 3; i++) queue.Enqueue (i * 3);
+         Console.WriteLine ($"Dequeued element:{queue.Dequeue ()}");
          Console.WriteLine ($"Peek:  {queue.Peek ()}");
-         Console.WriteLine ($"Dequeued: {queue.Dequeue ()}");
-         Console.WriteLine ($"Is Empty: {queue.Count == 0}");
-         for (int i = 0; i < 10; i++) queue.Enqueue (i + 1);
-         Console.WriteLine ($"Count: {queue.Count ()}");
-         Console.WriteLine ($"Element at index 5: {queue.ElementAt (5)}");
-         Console.WriteLine ("--------------------------------\n");
+         queue.Enqueue (7);
+         queue.Enqueue (9);
+         Console.WriteLine ($"Is Queue empty: {queue.Count == 0}");
       }
       #endregion
    }
