@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>G:\TestMyList\UnitTest1.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using ClassLibrary;
+namespace TestMyList {
+   [TestClass]
+   public class UnitTest1 {
+      MyList&lt;int&gt; myList = new ();
+      List&lt;int&gt; list = new ();
+
+      [TestMethod]
+      public void TestAdd () {
+         for (int i = 1; i &lt;= 5; i++) {
+            myList.Add (i * i);
+            list.Add (i * i);
+         }
+         Assert.AreEqual (myList[0], list[0]);
+      }
+
+      [TestMethod]
+      public void TestRemove () {
+         for (int i = 1; i &lt;= 5; i++) {
+            myList.Add (i * i);
+            list.Add (i * i);
+         }
+         list.Remove (4);
+         Assert.IsTrue (myList.Remove (4));
+         Assert.AreEqual (myList.Count, list.Count);
+         Assert.IsFalse (myList.Remove (5));
+         Assert.ThrowsException&lt;IndexOutOfRangeException&gt; (() =&gt; myList[4]);
+         Assert.ThrowsException&lt;IndexOutOfRangeException&gt; (() =&gt; {myList[-7] = 10;});
+      }
+
+      [TestMethod]
+      public void TestInsert () {
+         for (int i = 1; i &lt;= 4; i++) {
+            myList.Insert (i-1,i * i);
+            list.Insert (i - 1, i * i);
+         }
+         Assert.AreEqual (4, myList.Capacity);
+         list.Insert (1, 25); myList.Insert (1, 25);
+         Assert.AreEqual (list[1], myList[1]);
+         Assert.AreEqual (8, myList.Capacity);
+         Assert.ThrowsException&lt;IndexOutOfRangeException&gt; (() =&gt; myList.Insert (8, 5));
+         list.Clear (); myList.Clear ();
+      }
+
+      [TestMethod]
+      public void TestClear () {
+         for (int i = 1; i &lt;= 5; i++) {
+            myList.Add (i * i);
+            list.Add (i * i);
+         }
+         list.Clear (); myList.Clear ();
+         Assert.AreEqual (0, myList.Count);
+         list.Clear (); myList.Clear ();
+      }
+
+      [TestMethod]
+      public void TestRemoveAt () {
+         for (int i = 1; i &lt;= 5; i++) {
+            myList.Add (i * i);
+            list.Add (i * i);
+         }
+         list.RemoveAt (3); myList.RemoveAt (3);
+         Assert.AreEqual (list.Count, myList.Count);
+         Assert.ThrowsException&lt;IndexOutOfRangeException&gt; (() =&gt; myList.RemoveAt (8));
+         list.Clear (); myList.Clear ();
+      }
+
+      [TestMethod]
+      public void TestCapacity () {
+         Assert.AreEqual (4, myList.Capacity);
+         for (int i = 1; i &lt;= 5; i++) {
+            myList.Add (i * i);
+            list.Add (i * i);
+         }
+         Assert.AreEqual (8, myList.Capacity);
+         myList.Clear ();
+         Assert.AreEqual (4, myList.Capacity);
+      }
+   }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,7,5,35,1],[6,7,6,31,1],[9,30,9,31,1],[10,15,10,24,1],[10,26,10,32,1],[10,34,10,37,1],[10,39,10,40,1],[11,13,11,32,1],[12,13,12,30,1],[13,10,13,11,1],[14,10,14,47,1],[15,7,15,8,1],[18,33,18,34,1],[19,15,19,24,1],[19,26,19,32,1],[19,34,19,37,1],[19,39,19,40,1],[20,13,20,32,1],[21,13,21,30,1],[22,10,22,11,1],[23,10,23,26,1],[24,10,24,44,1],[25,10,25,53,1],[26,10,26,45,1],[27,10,27,66,1],[27,66,27,75,1],[27,75,27,77,1],[28,10,28,66,1],[28,66,28,67,1],[28,67,28,83,1],[28,83,28,84,0],[28,84,28,86,1],[29,7,29,8,1],[32,33,32,34,1],[33,15,33,24,1],[33,26,33,32,1],[33,34,33,37,1],[33,39,33,40,1],[34,13,34,39,1],[35,13,35,40,1],[36,10,36,11,1],[37,10,37,47,1],[38,10,38,30,1],[38,31,38,53,1],[39,10,39,47,1],[40,10,40,47,1],[41,10,41,66,1],[41,66,41,86,1],[41,86,41,88,1],[42,10,42,24,1],[42,25,42,41,1],[43,7,43,8,1],[46,32,46,33,1],[47,15,47,24,1],[47,26,47,32,1],[47,34,47,37,1],[47,39,47,40,1],[48,13,48,32,1],[49,13,49,30,1],[50,10,50,11,1],[51,10,51,24,1],[51,25,51,41,1],[52,10,52,44,1],[53,10,53,24,1],[53,25,53,41,1],[54,7,54,8,1],[57,35,57,36,1],[58,15,58,24,1],[58,26,58,32,1],[58,34,58,37,1],[58,39,58,40,1],[59,13,59,32,1],[60,13,60,30,1],[61,10,61,11,1],[62,10,62,28,1],[62,29,62,49,1],[63,10,63,53,1],[64,10,64,66,1],[64,66,64,85,1],[64,85,64,87,1],[65,10,65,24,1],[65,25,65,41,1],[66,7,66,8,1],[69,35,69,36,1],[70,10,70,47,1],[71,15,71,24,1],[71,26,71,32,1],[71,34,71,37,1],[71,39,71,40,1],[72,13,72,32,1],[73,13,73,30,1],[74,10,74,11,1],[75,10,75,47,1],[76,10,76,26,1],[77,10,77,47,1],[78,7,78,8,1]]);
+    </script>
+  </body>
+</html>

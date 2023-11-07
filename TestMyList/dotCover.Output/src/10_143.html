@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>G:\ClassLibrary\ClassLib.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace ClassLibrary {
+
+   #region MyList_Class ---------------------------------------------------------------------------
+   /// &lt;summary&gt;Represents a generic list with dynamic resizing capability&lt;/summary&gt;
+   /// &lt;typeparam name=&quot;T&quot;&gt;The type of elements in the list.&lt;/typeparam&gt;
+   public class MyList&lt;T&gt; {
+      #region Constructor -------------------------------------------
+      /// &lt;summary&gt;Initializes a new instance of the &lt;see cref=&quot;MyList{T}&quot;/&gt; class&lt;/summary&gt;
+      public MyList () =&gt; mArr = new T[mCapacity];
+      #endregion
+
+      #region Properties --------------------------------------------
+      /// &lt;summary&gt;Gets the current capacity of the list&lt;/summary&gt;
+      public int Capacity =&gt; mCapacity;
+
+      /// &lt;summary&gt;Gets the number of elements contained in the list&lt;/summary&gt;
+      public int Count =&gt; mCount;
+
+      /// &lt;summary&gt;Gets or sets the element at the specified index&lt;/summary&gt;
+      /// &lt;param name=&quot;index&quot;&gt;The zero-based index of the element to get or set&lt;/param&gt;
+      /// &lt;returns&gt;The element at the specified index.&lt;/returns&gt;
+      /// &lt;exception cref=&quot;IndexOutOfRangeException&quot;&gt;Thrown when the index is out of range [0, Count)&lt;/exception&gt;
+      public T this[int index] {
+         get {
+            if (index &lt; 0 || index &gt;= mCount)
+               throw new IndexOutOfRangeException ($&quot;Index {index} is out of range [0, {mCount}).&quot;);
+            return mArr[index];
+         }
+         set {
+            if (index &lt; 0 || index &gt;= mCount)
+               throw new IndexOutOfRangeException ($&quot;Index {index} is out of range [0, {mCount}).&quot;);
+            mArr[index] = value;
+         }
+      }
+      #endregion
+
+      #region Methods -----------------------------------------------
+      /// &lt;summary&gt;Adds an element to the end of the list&lt;/summary&gt;
+      /// &lt;param name=&quot;item&quot;&gt;The element to add to the list&lt;/param&gt;
+      public void Add (T item) {
+         if (mCount == mCapacity) ModifyCapacity ();
+         mArr[mCount++] = item;
+      }
+
+      /// &lt;summary&gt;Removes the first occurrence of a specific element from the list&lt;/summary&gt;
+      /// &lt;param name=&quot;item&quot;&gt;The element to remove&lt;/param&gt;
+      /// &lt;returns&gt;True if the element was successfully removed&lt;/returns&gt;
+      public bool Remove (T item) {
+         int index = Array.IndexOf (mArr, item);
+         if (!mArr.Contains (item)) return false;
+         RemoveAt (index);
+         return true;
+      }
+
+      /// &lt;summary&gt;Clears the entire list&lt;/summary&gt;
+      public void Clear () {
+         Array.Clear (mArr, 0, mCapacity);
+         mCount = 0;
+         mCapacity = 4;
+      }
+
+      /// &lt;summary&gt;Inserts elements at the specified index&lt;/summary&gt;
+      /// &lt;param name=&quot;index&quot;&gt;&lt;/param&gt;
+      /// &lt;param name=&quot;item&quot;&gt;&lt;/param&gt;
+      /// &lt;exception cref=&quot;IndexOutOfRangeException&quot;&gt;&lt;/exception&gt;
+      public void Insert (int index, T item) {
+         if (index &gt; mCount) throw new IndexOutOfRangeException ();
+         if (mCount == mCapacity) ModifyCapacity ();
+         for (int i = mCount; i &gt; index; i--) if (mCount != index) mArr[i] = mArr[i - 1];
+         mArr[index] = item;
+         mCount++;
+      }
+
+      /// &lt;summary&gt;Removes element at the specified index&lt;/summary&gt;
+      /// &lt;param name=&quot;index&quot;&gt;&lt;/param&gt;
+      /// &lt;exception cref=&quot;IndexOutOfRangeException&quot;&gt;&lt;/exception&gt;
+      public void RemoveAt (int index) {
+         if (index &gt; mCount) throw new IndexOutOfRangeException ();
+         for (int i = index; i &lt; mCount - 1; i++) mArr[i] = mArr[i + 1];
+         mArr[mCount--] = default!;
+         ModifyCapacity ();
+      }
+
+      /// &lt;summary&gt;Modifies the capacity of the list based on its current count&lt;/summary&gt;
+      void ModifyCapacity () {
+         if (mCount &lt;= mCapacity / 2) mCapacity = mCount &lt; 5 ? 4 : mCapacity / 2;
+         else mCapacity *= 2;
+         Array.Resize (ref mArr, mCapacity);
+      }
+      #endregion
+
+      #region Private Fields ------------------------------------------------
+      T[] mArr;
+      int mCount = 0, mCapacity = 4;
+      #endregion
+   }
+   #endregion
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,7,9,23,1],[9,27,9,50,1],[14,30,14,39,1],[17,27,17,33,1],[24,14,24,15,1],[25,13,25,46,1],[26,16,26,101,1],[27,13,27,32,1],[28,10,28,11,1],[29,14,29,15,0],[30,13,30,46,0],[31,16,31,101,0],[32,13,32,33,0],[33,10,33,11,0],[40,32,40,33,1],[41,10,41,34,1],[41,35,41,53,1],[42,10,42,32,1],[43,7,43,8,1],[48,35,48,36,1],[49,10,49,49,1],[50,10,50,36,1],[50,37,50,50,1],[51,10,51,27,1],[52,10,52,22,1],[53,7,53,8,1],[56,28,56,29,1],[57,10,57,43,1],[58,10,58,21,1],[59,10,59,24,1],[60,7,60,8,1],[66,46,66,47,1],[67,10,67,29,1],[67,30,67,68,1],[68,10,68,34,1],[68,35,68,53,1],[69,15,69,29,1],[69,31,69,40,1],[69,42,69,45,1],[69,47,69,67,1],[69,68,69,90,1],[70,10,70,29,1],[71,10,71,19,1],[72,7,72,8,1],[77,40,77,41,1],[78,10,78,29,1],[78,30,78,68,1],[79,15,79,28,1],[79,30,79,44,1],[79,46,79,49,1],[79,51,79,73,1],[80,10,80,36,1],[81,10,81,28,1],[82,7,82,8,1],[85,30,85,31,1],[86,10,86,38,1],[86,39,86,82,1],[87,15,87,30,1],[88,10,88,45,1],[89,7,89,8,1],[94,7,94,21,1],[94,23,94,36,1]]);
+    </script>
+  </body>
+</html>
