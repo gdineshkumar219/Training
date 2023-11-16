@@ -5,6 +5,9 @@
 *.pdn
 *.bak
 *.orig
+**/dotCover.Output/
+*.dcvr
+*.html
 *.pdb
 *.obj
 **/bin/
