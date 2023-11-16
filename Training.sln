@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training", "Training\Traini
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{2B991563-1C24-487B-8629-7B78A7D7DA6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMyList", "TestMyList\TestMyList.csproj", "{A7439845-E550-467E-8452-183DB1607B82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDouble", "TestMyList\TestDouble.csproj", "{A7439845-E550-467E-8452-183DB1607B82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

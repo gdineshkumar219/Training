@@ -1,82 +1,22 @@
 ﻿using ClassLibrary;
 
 namespace Training {
-   /// <summary>Contains the Main method to demonstrate the MyList class</summary>
+   /// <summary>Contains the Main method to demonstrate the Double.TryParse class</summary>
    internal class Program {
       #region Methods -----------------------------------------------
       /// <summary>Entry Point of the program</summary>
       static void Main () {
-         TestMyList ();
-         TestList ();
-      }
-
-      /// <summary>Tests the custom MyList class</summary>
-      static void TestMyList () {
-         try {
-            Console.WriteLine ("Testing MyList<T>");
-            MyList<char> myList = new ();
-            myList.Insert (0, 'a');
-            myList.Add ('a');
-            myList.Add ('b');
-            myList.Insert (3, 'c');
-            myList.Insert (4, 'd');
-            myList.Insert (5, 'e');
-            myList.Insert (6, 'f');
-            myList.Insert (7, 'e');
-            myList.Insert (8, 'h');
-            myList.Insert (4, 'z');
-            myList.Add ('k');
-            Console.WriteLine ("Testing MyList methods:");
-            Console.WriteLine ("Indexer Test: myList[3] = " + myList[3]);
-            Console.WriteLine ("Remove Test: myList.Remove('a') = " + myList.Remove ('a'));
-            myList.Clear ();
-            Console.WriteLine ("Clear Test: myList.Count after Clear = " + myList.Count);
-            myList.Insert (0, 'A');
-            Console.WriteLine ("Insert Test: myList[0] after Insert = " + myList[0]);
-            myList.RemoveAt (0);
-            Console.WriteLine ("RemoveAt Test: myList.Count after RemoveAt = " + myList.Count);
-            for (int i = 0; i < myList.Count; i++) Console.Write (myList[i]);
-            Console.WriteLine ($"\nUsing MyList Capacity: {myList.Capacity}");
-            Console.WriteLine ($"Using MyList Count: {myList.Count}");
-         } catch (Exception ex) {
-            Console.WriteLine ($"Exception in MyList: {ex.Message}");
+         string[] values = { "0", "7", ".1", "08.6", "7897", "00990.009", "-7.78", "-7.78e1", "-7E2", "+778e0", "8e-3", "4e2.3", "+4e2.3", "0.003e",
+                "x", "", "8e9.-3", "8-.7e3", "3.4e4-.3", "3.4e4+.3", "-35.-354e1", "e1", "1e", "1jkse", "1++$6e"};
+         foreach (var val in values) {
+            if (DoubleParser.TryParse (val, out double res)) Console.WriteLine ($"Parsed successfully (Custom): {val} as {res}");
+            else Console.WriteLine ($"Couldn't parse (Custom): {val} {res}");
          }
-         Console.WriteLine ("---------------------------------------");
-      }
-
-      /// <summary>Tests the custom built-in List class</summary>
-      static void TestList () {
-         try {
-            Console.WriteLine ("Testing built-in List<T>");
-            List<char> list = new List<char> ();
-            list.Insert (0, 'a');
-            list.Add ('a');
-            list.Add ('b');
-            list.Insert (3, 'c');
-            list.Insert (4, 'd');
-            list.Insert (5, 'e');
-            list.Insert (6, 'f');
-            list.Insert (7, 'e');
-            list.Insert (8, 'h');
-            list.Insert (4, 'z'); ;
-            list.Add ('k');
-            Console.WriteLine ("Testing List methods:");
-            Console.WriteLine ("Indexer Test: list[3] = " + list[3]);
-            Console.WriteLine ("Remove Test: list.Remove('a') = " + list.Remove ('a'));
-            list.Clear ();
-            Console.WriteLine ("Clear Test: list.Count after Clear = " + list.Count);
-            list.Insert (0, 'A');
-            Console.WriteLine ("Insert Test: list[0] after Insert = " + list[0]);
-            list.RemoveAt (0);
-            Console.WriteLine ("RemoveAt Test: list.Count after RemoveAt = " + list.Count);
-            Console.Write ("Elements of List(l):");
-            for (int i = 0; i < list.Count; i++) Console.Write (list[i]);
-            Console.WriteLine ($"\nUsing List Capacity: {list.Capacity}");
-            Console.WriteLine ($"Using List Count: {list.Count}");
-         } catch (Exception ex) {
-            Console.WriteLine ($"Exception in List: {ex.Message}");
+         foreach (var val in values) {
+            if (double.TryParse (val, out double res)) Console.WriteLine ($"Parsed successfully (double.TryParse): {val} as {res}");
+            else Console.WriteLine ($"Couldn't parse (double.TryParse): {val} {res}");
          }
       }
+      #endregion
    }
-   #endregion
 }
