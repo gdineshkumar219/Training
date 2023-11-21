@@ -124,25 +124,24 @@ internal class Program {
       while (k < slns.Count) {
          var solution = slns[k];
          Console.Clear ();
-         Console.WriteLine ($"Solution: {k + 1}☟ of {slns.Count}");
+         Console.WriteLine ($"Solution: {++k}☟ of {slns.Count}");
          for (int i = 0; i < cQueens; i++) {
             for (int j = 0; j < cQueens; j++) {
-               var black = ConsoleColor.Black;
-               var white = ConsoleColor.White;
-               var bg = ((i + j) % 2 == 0) ? white : black;
-               var fg = (bg == ConsoleColor.White) ? black : white;
+               var bg = ((i + j) % 2 == 0) ? ConsoleColor.White : ConsoleColor.Black;
+               var fg = (bg == ConsoleColor.White) ? ConsoleColor.Black : ConsoleColor.White;
                Console.BackgroundColor = bg;
                Console.ForegroundColor = fg;
                Console.Write (j == solution[i] ? "♛ " : "  ");
-               Console.ResetColor ();
             }
             Console.WriteLine ();
          }
-         Console.WriteLine ("Press left arrow for the previous solution, right arrow for the next solution or 'Q' to quit.");
-         var key = Console.ReadKey (true).Key;
-         if (key == ConsoleKey.Q) break;
-         else if (key == ConsoleKey.RightArrow) k = Math.Min (k + 1, slns.Count - 1);
-         else if (key == ConsoleKey.LeftArrow) k = Math.Max (k - 1, 0);
+         Console.ResetColor ();
+         Console.WriteLine ("← Previous solution, → Next solution, Q to quit.");
+         switch (Console.ReadKey (true).Key) {
+            case ConsoleKey.Q: return;
+            case ConsoleKey.RightArrow: k = Math.Min (k, slns.Count - 1); break;
+            case ConsoleKey.LeftArrow: k = Math.Max (k - 2, 0); break;
+         }
       }
    }
 }
