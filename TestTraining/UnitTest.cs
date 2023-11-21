@@ -24,15 +24,25 @@ namespace TestTraining {
       public void TestPush () {
          // Loop to push elements into both custom and built-in stacks
          for (int i = 0; i < 4; i++) {
+            // Push an element from the 'sq' array into the custom stack
             tStack.Push (sq[i]);
+            // Push the same element into the built-in stack
             stack.Push (sq[i]);
          }
-         // Assert that the counts of both stacks are equal
+         // Assert that the counts of both custom and built-in stacks are equal
          Assert.AreEqual (stack.Count, tStack.Count);
-         // Push an additional element into the custom stack
+         // Push an additional element (25) into the custom stack
          tStack.Push (25);
          // Assert that the capacity of the custom stack is now 8
          Assert.AreEqual (8, tStack.Capacity);
+         // Pop an element from the custom stack
+         tStack.Pop ();
+         // Assert that the counts of both custom and built-in stacks are equal after the pop operation
+         Assert.AreEqual (stack.Count, tStack.Count);
+         // Push a new element (36) into both custom and built-in stacks
+         stack.Push (36); tStack.Push (36);
+         // Assert that the Peek() result of both stacks is equal
+         Assert.AreEqual (stack.Peek (), tStack.Peek ());
       }
 
       /// <summary>Test the Pop method</summary>
@@ -45,6 +55,9 @@ namespace TestTraining {
             tStack.Push (sq[i]);
             stack.Push (sq[i]);
          }
+         stack.Pop (); tStack.Pop ();
+         stack.Pop (); tStack.Pop ();
+         stack.Push (25); tStack.Push (25);
          // Assert that Popping from both stacks yields the same result
          Assert.AreEqual (stack.Pop (), tStack.Pop ());
       }
@@ -61,6 +74,11 @@ namespace TestTraining {
          }
          // Assert that Peeking from both stacks yields the same result
          Assert.AreEqual (stack.Peek (), tStack.Peek ());
+         tStack.Pop (); stack.Pop ();
+         // Push a new element (36) into both custom and built-in stacks
+         stack.Push (36); tStack.Push (36);
+         // Assert that the Peek() result of both stacks is equal
+         Assert.AreEqual (stack.Peek (), tStack.Peek ());
       }
 
       /// <summary>Test the Clear method</summary>
@@ -72,6 +90,12 @@ namespace TestTraining {
          tStack.Clear ();
          // Assert that the count of the custom stack is now 0
          Assert.AreEqual (0, tStack.Count);
+         // Push a new element (21) into the custom stack
+         tStack.Push (21);
+         // Push another new element (30) into the custom stack
+         tStack.Push (30);
+         // Assert that the custom stack is not empty using the IsEmpty property
+         Assert.IsFalse (tStack.IsEmpty);
       }
 
       /// <summary>To check the capacity after change count</summary>
