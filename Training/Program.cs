@@ -19,25 +19,18 @@ namespace Training {
              "8-.7e3", "3.4e4-.3", "3.4e4+.3", "-35.-354e1", "e1", "1e", "1jkse", "1++$6e" };
          Console.WriteLine ("-------------------Custom double.TryParse-------------------");
          // Call method to print results using custom TryParse
-         PrintResults (values, "Custom");
-         Console.WriteLine ("\n------------------Built-in double.TryParse------------------");
-         // Call method to print results using built-in TryParse
-         PrintResults (values, "Built-in");
+         PrintResults (values);
       }
 
       /// <summary>Method to print results</summary>
       /// <param name="values">Array of string values to be parsed</param>
       /// <param name="methodName">Method name, either "Custom" or "Built-in"</param>
-      static void PrintResults (IEnumerable<string> values, string methodName) {
+      static void PrintResults (IEnumerable<string> values) {
          Console.WriteLine ($"Parsed status    | {"Input",-15} | {"Output",15}");
          Console.WriteLine (new string ('-', 60));
          foreach (var val in values) {
-            bool success = false;
-            double res = 0;
-            // Check if the method is "Custom" and attempt to parse using custom TryParse
-            if (methodName.Equals ("Custom")) success = DoubleParser.TryParse (val, out res);
-            // Check if the method is "Built-in" and attempt to parse using built-in TryParse
-            if (methodName.Equals ("Built-in")) success = double.TryParse (val, out res);
+            // Attempt to parse using custom TryParse
+            bool success = DoubleParser.TryParse (val, out double res);
             // Set console text color based on parsing success
             Console.ForegroundColor = success ? ConsoleColor.Green : ConsoleColor.DarkRed;
             // Print whether the value was parsed successfully or not
