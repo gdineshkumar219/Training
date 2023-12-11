@@ -13,34 +13,25 @@ namespace Training {
       #region Methods -----------------------------------------------
       /// <summary>Entry Point of the program</summary>
       static void Main () {
-         // Array of string values to be parsed
-         string[] values = {"abc",".34", "45." ,".e2","12.", "0", "7", ".1", "08.6", "7897", "00990.009",
-            "-7.78", "-7.78e1", "-7E2", "+778e0", "8e-3", "4e2.3", "+4e2.3", "0.003e","x", "","8e9.-3",
-             "8-.7e3", "3.4e4-.3", "3.4e4+.3", "-35.-354e1", "e1", "1e", "1jkse", "1++$6e" };
-         Console.WriteLine ("-------------------Custom double.TryParse-------------------");
-         // Call method to print results using custom TryParse
-         PrintResults (values);
-      }
-
-      /// <summary>Method to print results</summary>
-      /// <param name="values">Array of string values to be parsed</param>
-      /// <param name="methodName">Method name, either "Custom" or "Built-in"</param>
-      static void PrintResults (IEnumerable<string> values) {
-         Console.WriteLine ($"Parsed status    | {"Input",-15} | {"Output",15}");
-         Console.WriteLine (new string ('-', 60));
-         foreach (var val in values) {
-            // Attempt to parse using custom TryParse
-            bool success = DoubleParser.TryParse (val, out double res);
-            // Set console text color based on parsing success
-            Console.ForegroundColor = success ? ConsoleColor.Green : ConsoleColor.DarkRed;
-            // Print whether the value was parsed successfully or not
-            Console.Write ($"{(success ? "Pass" : "Fail"),-15} ");
-            // Reset console text color
-            Console.ResetColor ();
-            // Print the parsing result message
-            Console.WriteLine ($" | {val,-15} | {res}");
+         // Initialize a dictionary with string keys and double values
+         Dictionary<string, double> expressions = new () {
+        {"abc", 0}, {".34", 0}, {"45.", 0}, {".e2", 0}, {"12.", 0}, {"0", 0}, {"7", 7}, {".1", 0}, {"08.6", 8.6},
+        {"7897", 7897}, {"00990.009", 990.009}, {"-7.78", -7.78}, {"-7.78e1", -77.8}, {"-7E2", -700}, {"+778e0", 778},
+        {"8e-3", 0.008}, {"4e2.3", 0}, {"+4e2.3", 0}, {"0.003e", 0}, {"x", 0}, {"", 0}, {"8e9.- 3", 0},
+        {"8 - .7e3", 0}, {"3.4e4 - .3", 0}, {"3.4e4 + .3", 0}, {"-35.- 354e1", 0}, {"e1", 0}, {"1e", 0},
+        {"1jkse", 0}, {"1++$6e", 0}
+    };
+         // Print table header
+         Console.WriteLine ("Input \t\t    Test Status \tParsed Value");
+         Console.WriteLine ("-----------------------------------------------------");
+         foreach (var kvp in expressions) {
+            // Replace DoubleParser.TryParse with the actual parsing logic if necessary
+            DoubleParser.TryParse (kvp.Key, out double parsedValue);
+            // Determine the test status (Passed or Failed)
+            var msg = parsedValue == kvp.Value ? "Passed" : "Failed";
+            // Print each row of the table
+            Console.WriteLine ($"{kvp.Key,-20}|\t{msg,-15}|\t{parsedValue,-15}");
          }
-         Console.WriteLine (new string ('-', 60));
       }
       #endregion
    }

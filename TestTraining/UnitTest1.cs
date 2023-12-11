@@ -15,6 +15,7 @@ namespace TestDouble {
 
       [TestMethod]
       public void TestDoubleParse () {
+         Console.WriteLine ("Test Case Input\t\t\t\t   Status");
          // Valid values to test
          string[] values = { "0", ".e2", "7", "08.6", "7897", "00990.009", "-7.78", "-7.78e1", "-7E2",
             "+778e0", "8e-3", "4e2.3", "+4e2.3", "0.003e","x", "", "8e9.-3", "8-.7e3", "3.4e4-.3",
