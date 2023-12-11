@@ -5,25 +5,37 @@
 // Program.cs
 // Simple Program to Print the text 'Hello, World!' in Console
 // --------------------------------------------------------------------------------------------
-
-namespace Training;
-
+using Training;
+#region class Program --------------------------------------------------------------------------
 class Program {
-   static void Main (string[] args) {
+   #region Method ------------------------------------------------
+   static void Main () {
+      // Create an instance of the Evaluator class for mathematical expression evaluation
       var eval = new Evaluator ();
+      // Infinite loop for user input
       for (; ; ) {
+         // Prompt for user input
          Console.Write ("> ");
-         string text = Console.ReadLine () ?? "";
+         // Read and trim the user input
+         string text = Console.ReadLine ().Trim ().ToLower ();
+         // Exit the loop if the user inputs "exit"
          if (text == "exit") break;
          try {
+            // Evaluate the user input and display the result
             double result = eval.Evaluate (text);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine (result);
-         } catch (Exception e) {
+         } catch (EvalException e) {
+            // Display any exception messages in case of an error
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine (e.Message);
+         } finally {
+            // Reset console color after displaying the result or error
+            Console.ResetColor ();
          }
-         Console.ResetColor ();
       }
    }
+   #endregion
 }
+
+#endregion

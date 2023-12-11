@@ -1,81 +1,133 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// ------------------------------------------------------------------------------------------------
+// Training ~ A training program for new joinees at Metamation, Batch- July 2023.
+// Copyright (c) Metamation India.
+// ------------------------------------------------------------------
+// Evaluator.cs
+// Program to solve mathematical expressions.
+// ------------------------------------------------------------------------------------------------
 namespace Training;
-
-class EvalException : Exception {
-   public EvalException (string message) : base (message) { }
-}
-
-class Evaluator {
+#region Class Evaluator ---------------------------------------------
+/// <summary>
+/// Represents an expression evaluator that can process mathematical expressions
+/// </summary>
+public class Evaluator {
+   #region Methods --------------------------------------------------
+   /// <summary>Evaluates the specified mathematical expression and returns the result</summary>
+   /// <param name="text">The mathematical expression to be evaluated</param>
+   /// <returns>The result of the evaluation</returns>
    public double Evaluate (string text) {
+      // Clear operand and operator stacks before processing a new expression
+      mOperands.Clear ();
+      mOperators.Clear ();
+      // Create a tokenizer for the expression
+      Tokenizer tokenizer = new (this, text);
       List<Token> tokens = new ();
-      var tokenizer = new Tokenizer (this, text);
+      // Tokenize the expression and add tokens to the list
       for (; ; ) {
-         var token = tokenizer.Next (tokens);
-         if (token is TEnd) break;
-         if (token is TError err) throw new EvalException (err.Message);
-         tokens.Add (token);
+         Token t = tokenizer.Next (tokens);
+         if (t is TEnd) break;
+         tokens.Add (t);
       }
-
-      // Check if this is a variable assignment
-      TVariable? tVariable = null;
-      if (tokens.Count > 2 && tokens[0] is TVariable tvar && tokens[1] is TOpArithmetic { Op: '=' }) {
-         tVariable = tvar;
+      // Check for variable assignment at the beginning of the expression
+      TVariable var = null!;
+      if (tokens.Count > 1 && tokens[0] is TVariable tv && tokens[1] is TOpArithmetic { Op: '=' }) {
+         var = tv;
          tokens.RemoveRange (0, 2);
       }
-      foreach (var t in tokens) Process (t);
+      // Process each token in the expression
+      foreach (Token t in tokens) Process (t);
+      // Apply remaining operators in the stack
       while (mOperators.Count > 0) ApplyOperator ();
-      double f = mOperands.Pop ();
-      if (tVariable != null) mVars[tVariable.Name] = f;
-      return f;
+      if (mOperators.Count != 0) throw new EvalException ("Excessive use of operators");
+      if (mOperands.Count != 1) throw new EvalException ("Excessive use of operands");
+      if (BasePriority != 0) throw new EvalException ("Mismatched Paranthesis");
+
+      // Retrieve the final result and round it to 10 decimal places
+      double result = Math.Round (mOperands.Pop (), 10);
+      // If a variable was assigned, store the result in the variables dictionary
+      if (var != null) mVars[var.Name] = result;
+      return result;
    }
 
-   public int BasePriority { get; private set; }
-
+   /// <summary>Retrieves the value of the specified variable from the evaluator's variables</summary>
+   /// <param name="name">The name of the variable to retrieve</param>
+   /// <returns>The value of the specified variable</returns>
    public double GetVariable (string name) {
+      // Try to retrieve the variable value from the dictionary
       if (mVars.TryGetValue (name, out double f)) return f;
+      // If the variable is not found, throw an EvalException
       throw new EvalException ($"Unknown variable: {name}");
    }
-   readonly Dictionary<string, double> mVars = new ();
+   #endregion
 
+   #region Implementation -------------------------------------------
+   /// <summary> Processes the given token during expression evaluation</summary>
+   /// <param name="token">The token to be processed</param>
    void Process (Token token) {
+      // Switch on the type of the token
       switch (token) {
          case TNumber num:
+            // If the token is a number, push its value to the operand stack
             mOperands.Push (num.Value);
             break;
-         case TOperator op:
-            if (op is TOpUnary unaryOp) {
-               while (mOperators.Count > 0 && mOperators.Peek ().Priority > unaryOp.Priority)
-                  ApplyOperator ();
-               mOperators.Push (unaryOp);
-            } else { 
-            while (mOperators.Count > 0 && mOperators.Peek ().Priority >= op.Priority)
-               ApplyOperator ();
-            mOperators.Push (op);}
-            break;
          case TPunctuation p:
-            BasePriority += p.Punct == '(' ? 10 : -10;
+            // If the token is punctuation, check for '(' and apply operators
+            if (p.Punct == '(') break;
+            ApplyOperator ();
+            break;
+         case TOperator op:
+            // If the token is an operator, handle its processing
+            if (mOperators.Count != 0 && mOperators.Peek ().FinalPriority >= op.FinalPriority)
+               ApplyOperator ();
+            mOperators.Push (op);
             break;
          default:
+            // If the token type is unknown, throw an EvalException
             throw new EvalException ($"Unknown token: {token}");
       }
    }
+
+   /// <summary> Applies the top operator from the stack during expression evaluation</summary>
+   void ApplyOperator () {
+      // Pop the top operator from the stack
+      TOperator op = mOperators.Pop ();
+      double a;
+      try {
+         // Try to pop the top operand from the stack
+         a = mOperands.Pop ();
+      } catch (Exception) {
+         // If an exception occurs, push the operator back and return
+         mOperators.Push (op);
+         return;
+      }
+      // Switch on the type of the operator and apply it to the operands
+      switch (op) {
+         case TOpFunction fun:
+            mOperands.Push (fun.Apply (a));
+            break;
+         case TOpArithmetic bin:
+            if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
+            double b = mOperands.Pop ();
+            mOperands.Push (bin.Apply (b, a));
+            break;
+         case TOpUnary u:
+            mOperands.Push (u.Apply (a));
+            break;
+      }
+   }
+   #endregion
+
+
+   /// <summary> Represents the base priority for operators in the evaluator</summary>
+   internal int BasePriority { get; set; }
+   
+
+   #region Private Members ------------------------------------------
+   // Dictionary to store variables and their values
+   readonly Dictionary<string, double> mVars = new ();
+   // Operand and operator stacks used during evaluation
    readonly Stack<double> mOperands = new ();
    readonly Stack<TOperator> mOperators = new ();
-
-   void ApplyOperator () {
-      var op = mOperators.Pop ();
-      var f1 = mOperands.Pop ();
-      if (op is TOpFunction func) mOperands.Push (func.Evaluate (f1));
-      else if (op is TOpArithmetic arith) {
-         var f2 = mOperands.Pop ();
-         mOperands.Push (arith.Evaluate (f2, f1));
-      } else mOperands.Push (op is TOpUnary un ? un.Evaluate (f1) : ((TOpFunction)op).Evaluate (f1));
-   }
-
-
+   #endregion
 }
+#endregion
