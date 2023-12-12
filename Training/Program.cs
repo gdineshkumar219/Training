@@ -6,6 +6,7 @@
 // Program to implement double.TryParse.
 // ------------------------------------------------------------------------------------------------
 using ClassLibrary;
+using System.Globalization;
 
 namespace Training {
    /// <summary>Contains the Main method to demonstrate the Double.TryParse class</summary>
