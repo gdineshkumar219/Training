@@ -21,21 +21,20 @@ class Program {
          // Exit the loop if the user inputs "exit"
          if (text == "exit") break;
          try {
-            // Evaluate the user input and display the result
+            //Evaluate the user input and display the result
             double result = eval.Evaluate (text);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine (result);
          } catch (EvalException e) {
-            // Display any exception messages in case of an error
+            //Display any exception messages in case of an error
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine (e.Message);
-         } finally {
-            // Reset console color after displaying the result or error
-            Console.ResetColor ();
+               Console.WriteLine (e.Message);
+            } finally {
+            //Reset console color after displaying the result or error
+               Console.ResetColor ();
          }
       }
    }
    #endregion
 }
-
 #endregion

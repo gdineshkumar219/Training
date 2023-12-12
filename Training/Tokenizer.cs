@@ -21,7 +21,6 @@ class Tokenizer {
    /// <param name="tokens">List of tokens being constructed</param>
    /// <returns>Next token in the input text</returns>
    public Token Next (List<Token> tokens) {
-      int openParenthesesCount = 0, closeParenthesesCount=0;
       while (mN < mText.Length) {
          // Read the next character from the input text
          char ch = mText[mN++];
@@ -45,26 +44,12 @@ class Tokenizer {
                mEval.BasePriority += ch == '(' ? 10 : -10;
                // Create a punctuation token
                return new TPunctuation (ch);
-            //case '(' or ')':
-            //   // Adjust evaluator priority based on parentheses
-            //   if(mText.Any(ch=>ch=='(')) openParenthesesCount++;
-            //   if (mText.Any (ch => ch == ')')) closeParenthesesCount++;
-            //   if (mText.Count()) {
-            //      // Adjust base priority when parentheses count is zero
-            //      mEval.BasePriority += ch == '(' ? 10 : -10;
-            //   } else throw new EvalException ("Unbalanced parantheses");
-
-            //   // Create a punctuation token
-            //   return new TPunctuation (ch);
             default:
                // Create an error token for unknown symbols
                return new TError ($"Unknown symbol: {ch}");
-
          }
       }
-      //// Return end of input token
-      //return new TEnd ();
-      // Check if the number of open and closed parentheses is the same
+      // Return end of input token
       return new TEnd ();
    }
    #endregion

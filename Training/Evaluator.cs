@@ -19,6 +19,7 @@ public class Evaluator {
       // Clear operand and operator stacks before processing a new expression
       mOperands.Clear ();
       mOperators.Clear ();
+      BasePriority = 0;
       // Create a tokenizer for the expression
       Tokenizer tokenizer = new (this, text);
       List<Token> tokens = new ();
@@ -75,6 +76,7 @@ public class Evaluator {
             if (p.Punct == '(') break;
             ApplyOperator ();
             break;
+
          case TOperator op:
             // If the token is an operator, handle its processing
             if (mOperators.Count != 0 && mOperators.Peek ().FinalPriority >= op.FinalPriority)
