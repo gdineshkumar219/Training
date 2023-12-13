@@ -132,7 +132,7 @@ class TOpArithmetic : TOperator {
    public override string ToString () => $"TBinary {Op}";
 
    /// <summary> Gets the character representing the arithmetic operation </summary>
-   public char Op { get; private set; }
+   public char Op { get; set; }
 
    /// <summary> Static dictionary for operator priorities</summary>
    private static readonly Dictionary<char, int> sPriority = new () {

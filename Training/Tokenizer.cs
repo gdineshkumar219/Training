@@ -28,7 +28,7 @@ class Tokenizer {
             case ' ': continue;  // Skip whitespace
             case '+' or '-':
                // Check if the current character is a unary operator or an arithmetic operator
-               return (tokens.Count == 0 || tokens[^1] is TOpUnary || tokens[^1] is TOperator or TPunctuation { Punct: '(' })
+               return (tokens.Count == 0 || tokens[^1] is TOperator or TPunctuation { Punct: '(' })
                    ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch);
             case '/' or '*' or '^' or '=':
                // Create an arithmetic operator token
@@ -69,7 +69,7 @@ class Tokenizer {
       // Update the position
       mN = start + id.Length;
       // Check if the identifier is a predefined function and create the corresponding token
-      return TOpFunction.funcs.Contains (id) && mText.Any (ch => char.IsDigit(ch))
+      return TOpFunction.funcs.Contains (id) && mText.Any (char.IsDigit)
           ? new TOpFunction (mEval, id) : new TVariable (mEval, id);
    }
 

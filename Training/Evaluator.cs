@@ -16,10 +16,7 @@ public class Evaluator {
    /// <param name="text">The mathematical expression to be evaluated</param>
    /// <returns>The result of the evaluation</returns>
    public double Evaluate (string text) {
-      // Clear operand and operator stacks before processing a new expression
-      mOperands.Clear ();
-      mOperators.Clear ();
-      BasePriority = 0;
+      Reset ();
       // Create a tokenizer for the expression
       Tokenizer tokenizer = new (this, text);
       List<Token> tokens = new ();
@@ -35,14 +32,18 @@ public class Evaluator {
          var = tv;
          tokens.RemoveRange (0, 2);
       }
+      for (int i = 0; i < tokens.Count; i++) {
+         if (tokens[i] is TOpArithmetic bin && bin.Op is '+' or '-' && tokens[i + 1] is TOpUnary un) {
+            bin.Op = bin.Op == un.Op ? '+' : '-';
+            tokens.Remove (un);
+         }
+      }
       // Process each token in the expression
       foreach (Token t in tokens) Process (t);
-      // Apply remaining operators in the stack
       while (mOperators.Count > 0) ApplyOperator ();
       if (mOperators.Count != 0) throw new EvalException ("Excessive use of operators");
       if (mOperands.Count != 1) throw new EvalException ("Excessive use of operands");
       if (BasePriority != 0) throw new EvalException ("Mismatched Paranthesis");
-
       // Retrieve the final result and round it to 10 decimal places
       double result = Math.Round (mOperands.Pop (), 10);
       // If a variable was assigned, store the result in the variables dictionary
@@ -76,7 +77,6 @@ public class Evaluator {
             if (p.Punct == '(') break;
             ApplyOperator ();
             break;
-
          case TOperator op:
             // If the token is an operator, handle its processing
             if (mOperators.Count != 0 && mOperators.Peek ().FinalPriority >= op.FinalPriority)
@@ -117,12 +117,16 @@ public class Evaluator {
             break;
       }
    }
+   /// <summary>Clear operand and operator stacks before processing a new expression </summary>
+   void Reset () {
+      mOperands.Clear ();
+      mOperators.Clear ();
+      BasePriority = 0;
+   }
    #endregion
-
 
    /// <summary> Represents the base priority for operators in the evaluator</summary>
    internal int BasePriority { get; set; }
-   
 
    #region Private Members ------------------------------------------
    // Dictionary to store variables and their values
