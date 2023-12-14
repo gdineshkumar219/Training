@@ -39,7 +39,6 @@ public class TestTraining {
          double expected = Math.Abs (input.Value);
          double actual = Math.Abs (eval.Evaluate (input.Key));
          Assert.AreEqual (actual, expected);
-         Console.ResetColor ();
       }
       // Check invalid expressions that should throw EvalException
       foreach (var ip in invalidExp) Assert.ThrowsException<EvalException> (() => eval.Evaluate (ip));

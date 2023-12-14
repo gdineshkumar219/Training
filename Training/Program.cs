@@ -14,8 +14,7 @@ class Program {
       var eval = new Evaluator ();
 
       // List of predefined input expressions
-      List<string> inputs = new List<string>
-      {
+      List<string> inputs = new () {
         "-10 ^ 2", "a = 4", "b = 3.5", "a + b", "asin sin 90", "atan tan 45", "sqrt 25",
         "log 1", "-2 -2", "10/2+3", "(+10+3)*2", "(a+2) * a", "cos 0", "exp 2", "cos acos 0",
         "10 -2 -2", "---5", "-5+10", "-2-4", "---4+5--2+3", "(2+3)*-4", "(2+3)*+5",
