@@ -22,19 +22,19 @@ namespace Training {
             {"1jkse", 0}, {"1++$6e", 0}
         };
          // Print table header
-         Console.WriteLine ("Input \t\t    Test Status \tParsed Value");
-         Console.WriteLine ("-----------------------------------------------------");
+         Console.WriteLine ("Input \t\t\tParsed value \t\tTest status");
+         Console.WriteLine ("-------------------------------------------------------------");
          foreach (var kvp in expressions) {
             // Replace DoubleParser.TryParse with the actual parsing logic if necessary
             DoubleParser.TryParse (kvp.Key, out double parsedValue);
             // Determine the test status (Passed or Failed)
             Console.Write ($"{kvp.Key,-20}|");
             var msg = parsedValue == kvp.Value ? "Passed" : "Failed";
+            Console.Write ($"\t{parsedValue,-15}|");
             // Set console text color based on the test status
             Console.ForegroundColor = msg == "Passed" ? ConsoleColor.Green : ConsoleColor.DarkRed;
-            Console.Write ($"\t{msg,-15}");
+            Console.WriteLine ($"\t{msg,-15}");
             Console.ResetColor ();
-            Console.WriteLine ($"|\t{parsedValue,-15}");
          }
       }
       #endregion
