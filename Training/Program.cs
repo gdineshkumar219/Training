@@ -5,11 +5,13 @@
 // Program.cs
 // Simple Program to Print the text 'Hello, World!' in Console
 // --------------------------------------------------------------------------------------------
+using ClassLibrary;
 
 namespace Training {
    internal class Program {
-      static void Main (string[] args) {
-         Console.WriteLine ("Hello, World!");
+      static void Main () {
+         string input = Console.ReadLine ().ToUpper () + '~';
+         Console.WriteLine (FileNameParser.FileNameParse (input));
       }
    }
 }
