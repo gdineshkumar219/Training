@@ -34,12 +34,10 @@ namespace ClassLibrary {
       /// <param name="result">A tuple containing drive letter, folder, file name, and extension if parsing is successful</param>
       /// <returns>True if parsing is successful; otherwise, false</returns>
       public static bool FileNameParse (string filePath, out (string dLetter, string folder, string flName, string ext) result) {
-         filePath=filePath.ToUpper ()+'~';
-         // Initialize the state machine and variables
+         filePath = filePath.ToUpper () + '~';
          State s = State.A;
          Action none = () => { }, todo;
          string folder = "", dLetter = "", flName = "", ext = ".";
-         // Iterate through each character in the file path
          foreach (var ch in filePath.Trim ()) {
             // Transition based on the current state and the current character
             (s, todo) = (s, ch) switch {
@@ -52,18 +50,11 @@ namespace ClassLibrary {
                (State.G, '~') => (State.H, none),
                _ => (State.Z, none),
             };
-            // Execute the action associated with the transition
             todo ();
          }
          // Check if the parsing reached the end state
-         if (s == State.H) {
-            // Extract and return the result
-            try {
-               result = (dLetter, folder[1..].Remove (folder.LastIndexOf ('\\') - 1), flName + ext, ext);
-            }catch (Exception) {
-               result = default;
-               return false;
-            }
+         if (s == State.H && folder.Count (item => item == '\\') > 1) {
+            result = (dLetter, folder[1..].Remove (folder.LastIndexOf ('\\') - 1), flName + ext, ext);
             return true;
          }
          // Set result to default and return false if parsing was not successful

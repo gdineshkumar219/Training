@@ -13,7 +13,6 @@ namespace Training {
       #region Methods -----------------------------------------------
       /// <summary> Entry point of the program</summary>
       static void Main () {
-         // Array of test file paths
          var testPaths = new string[]
          {
             @"Cz:\abc\def\r.txt", @"C:\abc\def\r.txt", @"C:\Readme.txt", @"C:\abc\.bcf",
@@ -21,10 +20,8 @@ namespace Training {
             @"C:\ab.c\def\r.txt", @"C:\abc:d", @".\abc", ".abc", "abc", @"C:\abc6\def\r.txt",
             @"C:\abc\def\r.txt.txt", @"C:\work\r.txt"
          };
-         // Display header for the table
          Console.WriteLine ("{0,-40} {1,-10} {2,-20} {3,-20} {4,-10} {5,-10}", "Input", "Drive", "Folder", "Filename", "Extension", "Result");
          Console.WriteLine ("".PadRight (110, '-'));
-         // Iterate through test paths and display results
          foreach (var path in testPaths) DisplayResult (path);
          // Continuous input from the user until 'exit' is entered
          while (true) {
@@ -39,19 +36,14 @@ namespace Training {
       /// <summary>Display the parsing result for a given file path</summary>
       /// <param name="path">The file path to parse</param>
       static void DisplayResult (string path) {
-         // Tuple to store parsing result
          (string dLetter, string folder, string flName, string ext) result;
-         // Attempt to parse the file path
-         bool parsingSuccessful = FileNameParser.FileNameParse (path, out result);
-         // Display the file path and parsing result
+         bool sucess = FileNameParser.FileNameParse (path, out result);
          Console.Write ($"{path,-40} ");
-         if (parsingSuccessful) {
-            // Display parsed components if parsing was successful
+         if (sucess) {
             Console.Write ($"{result.dLetter,-10}|{result.folder,-20}|{result.flName,-20}|{result.ext,-10}|");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine ("Passed");
          } else {
-            // Display placeholders if parsing failed
             Console.Write ($"{"-",-10}|{"-",-20}|{"-",-20}|{"-",-10}|");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine ("Failed");
