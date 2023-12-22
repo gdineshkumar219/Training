@@ -8,13 +8,14 @@
 using ClassLibrary;
 namespace Training {
    internal class Program {
-      static void Main (string[] args) { 
-         TDEndQueue<int>mQ = new TDEndQueue<int>();
+      static void Main (string[] args) {
+         TDEQueue<int> mQ = new ();
          mQ.EnqueueRear (1);
+         mQ.EnqueueFront (3);
          mQ.EnqueueRear (2);
-         mQ.EnqueueRear (3);
-         mQ.EnqueueRear (4);
-         //mQ.DisplayDeque ();
+
+         mQ.EnqueueFront (4);
+         Console.WriteLine(mQ.DequeueRear());
       }
    }
 }
