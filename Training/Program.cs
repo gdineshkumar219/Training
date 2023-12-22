@@ -13,19 +13,18 @@ namespace Training {
       #region Methods -----------------------------------------------
       /// <summary> Entry point of the program</summary>
       static void Main () {
-         var testPaths = new string[]
-         {
+         var testPaths = new[] {
             @"Cz:\abc\def\r.txt", @"C:\abc\def\r.txt", @"C:\Readme.txt", @"C:\abc\.bcf",
             @"C:\abc\bcf.", @"Readme.txt", @"C:\abc\def", @"C:\abc d", @"\abcd\Readme.txt", " ",
             @"C:\ab.c\def\r.txt", @"C:\abc:d", @".\abc", ".abc", "abc", @"C:\abc6\def\r.txt",
-            @"C:\abc\def\r.txt.txt", @"C:\work\r.txt"
+            @"C:\abc\def\r.txt.txt", @"C:\work\r.txt",@"C:\\work~\\r.txt~"
          };
          Console.WriteLine ("{0,-40} {1,-10} {2,-20} {3,-20} {4,-10} {5,-10}", "Input", "Drive", "Folder", "Filename", "Extension", "Result");
          Console.WriteLine ("".PadRight (110, '-'));
          foreach (var path in testPaths) DisplayResult (path);
          // Continuous input from the user until 'exit' is entered
          while (true) {
-            Console.WriteLine ("\nEnter file path or type 'exit' to end ");
+            Console.WriteLine ("\r\nEnter file path or type 'exit' to end ");
             Console.Write (">");
             string input = Console.ReadLine ().ToLower ();
             if (input.Equals ("exit")) break;

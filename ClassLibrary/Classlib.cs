@@ -7,9 +7,8 @@
 // folder, file name, and extension.
 // ------------------------------------------------------------------------------------------------
 namespace ClassLibrary {
-   /// <summary>
-   /// Provides methods for parsing file paths and extracting information such as drive letter, folder, file name, and extension
-   /// </summary>
+   /// <summary>Provides methods for parsing file paths and extracting information such as drive letter, 
+   /// folder, file name, and extension</summary>
    #region FileNameParser -------------------------------------------
    public class FileNameParser {
       #region Methods -----------------------------------------------
@@ -27,9 +26,7 @@ namespace ClassLibrary {
          Z   // Error
       }
 
-      /// <summary>
-      /// Parses the given file path and extracts drive letter, folder, file name, and extension
-      /// </summary>
+      /// <summary>Parses the given file path and extracts drive letter, folder, file name, and extension</summary>
       /// <param name="filePath">The input file path to be parsed</param>
       /// <param name="result">A tuple containing drive letter, folder, file name, and extension if parsing is successful</param>
       /// <returns>True if parsing is successful; otherwise, false</returns>
