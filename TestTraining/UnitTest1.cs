@@ -16,8 +16,8 @@ namespace TestTraining {
       /// <summary>Test method for the FileNameParser class</summary>
       [TestMethod]
       public void TestFileNameParser () {
-         var sTests = new Dictionary<string, bool>{ 
-            { @"Cz:\abc\def\r.txt", false }, { @"C:\abc\def\r.txt", true }, { @"C:\Readme.txt", false }, 
+         var sTests = new Dictionary<string, bool> {
+            { @"Cz:\abc\def\r.txt", false }, { @"C:\abc\def\r.txt", true }, { @"C:\Readme.txt", false },
             { @"C:\abc\.bcf", false }, { @"C:\abc\bcf.", false }, { @"Readme.txt", false },
             { @"C:\abc\def", false }, { @"C:\abc d", false }, { @"\abcd\Readme.txt", false }, { " ", false },
             { @"C:\ab.c\def\r.txt", false }, { @"C:\abc:d", false }, { @".\abc", false }, { ".abc", false },
