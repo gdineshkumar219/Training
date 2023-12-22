@@ -5,6 +5,8 @@
 //Classlib.cs
 // ------------------------------------------------------------------------------------------------
 
+using System.Xml.Linq;
+
 namespace ClassLibrary {
 
    public class TDEQueue<T> {
@@ -51,7 +53,7 @@ namespace ClassLibrary {
       /// <exception cref="InvalidOperationException">Thrown when the deque is empty</exception>
       public T DequeueFront () {
          if (IsEmpty)
-            throw new InvalidOperationException ("The deque is empty.");
+            throw new InvalidOperationException ();
          T item = mArr[mFront];
          mArr[mFront] = default!;
          mFront = (mFront + 1) % mCapacity;
@@ -65,7 +67,7 @@ namespace ClassLibrary {
       /// <exception cref="InvalidOperationException">Thrown when the deque is empty</exception>
       public T DequeueRear () {
          if (IsEmpty)
-            throw new InvalidOperationException ("Queue is empty.");
+            throw new InvalidOperationException ();
          mRear = (mRear - 1+mCapacity) % mCapacity;
          T item = mArr[mRear];
          mArr[mRear] = default!;
@@ -80,6 +82,8 @@ namespace ClassLibrary {
          if (mCount <= mCapacity / 2) newCapacity = mCount < 5 ? 4 : mCapacity / 2;
          else newCapacity = mCapacity * 2;
          T[] newArray = new T[newCapacity];
+         //if (mFront == mRear) mArr = (mArr[mFront..mCount].Concat (mArr[0..mRear])).ToArray ();
+
          if (mFront < mRear) Array.Copy (mArr, mFront, newArray, 0, mCount);
          else {
             Array.Copy (mArr, mFront, newArray, 0, mCapacity - mFront);

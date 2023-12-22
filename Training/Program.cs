@@ -15,7 +15,7 @@ namespace Training {
          mQ.EnqueueRear (2);
 
          mQ.EnqueueFront (4);
-         Console.WriteLine(mQ.DequeueRear());
+         Console.WriteLine(mQ.DequeueFront());
       }
    }
 }
