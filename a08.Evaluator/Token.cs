@@ -10,8 +10,8 @@ abstract class TNumber : Token {
 class TLiteral : TNumber {
    public TLiteral (double f) => mValue = f;
    public override double Value => mValue;
-   public override string ToString () => $"literal:{Value}";
-   readonly double mValue;
+   public override string ToString () => $"TLiteral {Value}";
+   private readonly double mValue;
 }
 
 class TVariable : TNumber {
@@ -30,25 +30,28 @@ abstract class TOperator : Token {
 
 class TOpArithmetic : TOperator {
    public TOpArithmetic (Evaluator eval, char ch) : base (eval) => Op = ch;
-   public char Op { get; private set; }
-   public override string ToString () => $"op:{Op}:{Priority}";
+   public char Op { get; set; }
+   public override string ToString () => $"TBinary {Op}:{Priority}";
    public override int Priority => sPriority[Op] + mEval.BasePriority;
    static Dictionary<char, int> sPriority = new () {
       ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2, ['^'] = 3, ['='] = 4,
    };
-
    public double Evaluate (double a, double b) {
       return Op switch {
-         '+' => a + b, '-' => a - b, 
-         '*' => a * b, '/' => a / b,
+         '-' => a - b,
+         '+' => a + b,
+         '*' => a * b,
+         '/' => a / b,
          '^' => Math.Pow (a, b),
-         _ => throw new EvalException ($"Unknown operator: {Op}"),
+         _ => 0
       };
    }
 }
 
 class TOpUnary : TOperator {
    public TOpUnary (Evaluator eval, char op) : base (eval) => Op = op;
+   public char Op { get; private set; }
+   public override string ToString () => $"TUnary {Op}";
    public override int Priority => 6 + mEval.BasePriority;
    public double Evaluate (double a) =>
        Op switch {
@@ -56,33 +59,30 @@ class TOpUnary : TOperator {
           '-' => -a,
           _ => throw new EvalException ("Unary Operator not Implemented")
        };
-   public override string ToString () => $"TUnary {Op}";
-   public char Op { get; private set; }
 }
 
 class TOpFunction : TOperator {
    public TOpFunction (Evaluator eval, string name) : base (eval) => Func = name;
    public string Func { get; private set; }
-   public override string ToString () => $"func:{Func}:{Priority}";
+   public override string ToString () => $"TFunc {Func}";
    public override int Priority => 5 + mEval.BasePriority;
-
    public double Evaluate (double f) {
       return Func switch {
-         "sin" => Math.Sin (D2R (f)), 
+         "sin" => Math.Sin (D2R (f)),
          "cos" => Math.Cos (D2R (f)),
          "tan" => Math.Tan (D2R (f)),
-         "sqrt" => Math.Sqrt (f),
+         "acos" => R2D (Math.Acos (f)),
+         "asin" => R2D (Math.Asin (f)),
+         "atan" => R2D (Math.Atan (f)),
          "log" => Math.Log (f),
          "exp" => Math.Exp (f),
-         "asin" => R2D (Math.Asin (f)),
-         "acos" => R2D (Math.Acos (f)),
-         "atan" => R2D (Math.Atan (f)),
-         _ => throw new EvalException ($"Unknown function: {Func}")
+         "sqrt" => Math.Sqrt (f),
+         _ => throw new EvalException ("Function not Implemented")
       };
-
-      double D2R (double f) => f * Math.PI / 180;
-      double R2D (double f) => f * 180 / Math.PI;
    }
+
+   private static double D2R (double f) => f * Math.PI / 180;
+   private static double R2D (double f) => f * 180 / Math.PI;
 }
 
 class TPunctuation : Token {
@@ -96,7 +96,7 @@ class TEnd : Token {
 }
 
 class TError : Token {
-   public TError (string message) => Message = message;
+   public TError (string msg) => Message = msg;
    public string Message { get; private set; }
    public override string ToString () => $"error:{Message}";
 }
