@@ -4,26 +4,29 @@ class Tokenizer {
    public Tokenizer (Evaluator eval, string text) {
       mText = text; mN = 0; mEval = eval;
    }
-   readonly Evaluator mEval;  // The evaluator that owns this 
+   readonly Evaluator mEval;  // The evaluator that owns this
    readonly string mText;     // The input text we're parsing through
    int mN;                    // Position within the text
 
    public Token Next (List<Token> tokens) {
       while (mN < mText.Length) {
-         char ch = char.ToLower (mText[mN++]);
+         char ch = mText[mN++];
          switch (ch) {
-            case ' ' or '\t': continue;
+            case ' ' or '\t': continue;  // Skip whitespace
             case '+' or '-':
-               // Check if the current character is a unary operator or an arithmetic operator
                return (tokens.Count == 0 || tokens[^1] is TOperator or TPunctuation { Punct: '(' })
                    ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch);
             case '/' or '*' or '^' or '=':
-               // Create an arithmetic operator token
                return new TOpArithmetic (mEval, ch);
-            case (>= '0' and <= '9') or '.': return GetNumber ();
-            case '(' or ')': return new TPunctuation (ch);
-            case >= 'a' and <= 'z': return GetIdentifier ();
-            default: return new TError ($"Unknown symbol: {ch}");
+            case >= '0' and <= '9':
+               return GetNumber ();
+            case >= 'a' and <= 'z':
+               return GetIdentifier ();
+            case '(' or ')':
+               mEval.BasePriority += ch == '(' ? 10 : -10;
+               return new TPunctuation (ch);
+            default:
+               return new TError ($"Unknown symbol: {ch}");
          }
       }
       return new TEnd ();

@@ -1,10 +1,9 @@
 ﻿namespace Eval;
 
-class EvalException : Exception {
+public class EvalException : Exception {
    public EvalException (string message) : base (message) { }
 }
-
-class Evaluator {
+public class Evaluator {
    public double Evaluate (string text) {
       Reset ();
       List<Token> tokens = new ();
@@ -17,19 +16,28 @@ class Evaluator {
       }
 
       // Check if this is a variable assignment
-      TVariable? tVariable = null;
-      if (tokens.Count > 2 && tokens[0] is TVariable tvar && tokens[1] is TOpArithmetic { Op: '=' }) {
-         tVariable = tvar;
+      TVariable tVariable = null!;
+      if (tokens.Count > 1 && tokens[0] is TVariable tv && tokens[1] is TOpArithmetic { Op: '=' }) {
+         tVariable = tv;
          tokens.RemoveRange (0, 2);
       }
-      foreach (var t in tokens) Process (t);
+      for (int i = 0; i < tokens.Count; i++) {
+         if (tokens[i] is TOpArithmetic bin && bin.Op is '+' or '-' && tokens[i + 1] is TOpUnary un) {
+            bin.Op = bin.Op == un.Op ? '+' : '-';
+            tokens.Remove (un);
+         }
+      }
+      foreach (Token t in tokens) Process (t);
       while (mOperators.Count > 0) ApplyOperator ();
-      double f = mOperands.Pop ();
+      if (mOperators.Count > 0) throw new EvalException ("Excessive use of operators");
+      if (mOperands.Count != 1) throw new EvalException ("Excessive use of operands");
+      if (BasePriority != 0) throw new EvalException ("Mismatched Paranthesis");
+      double f = Math.Round (mOperands.Pop (), 10);
       if (tVariable != null) mVars[tVariable.Name] = f;
-      return f; 
+      return f;
    }
 
-   public int BasePriority { get; private set; }
+   public int BasePriority { get; set; }
 
    public double GetVariable (string name) {
       if (mVars.TryGetValue (name, out double f)) return f;
@@ -39,16 +47,19 @@ class Evaluator {
 
    void Process (Token token) {
       switch (token) {
-         case TNumber num: 
-            mOperands.Push (num.Value); 
+         case TNumber num:
+            mOperands.Push (num.Value);
             break;
          case TOperator op:
-            while (mOperators.Count > 0 && mOperators.Peek ().Priority > op.Priority)
+            if (mOperators.Count > 0 && mOperators.Peek ().Priority >= op.Priority)
                ApplyOperator ();
             mOperators.Push (op);
             break;
          case TPunctuation p:
-            BasePriority += p.Punct == '(' ? 10 : -10;
+            //BasePriority += p.Punct == '(' ? 10 : -10;
+            //break;
+            if (p.Punct == '(') break;
+            ApplyOperator ();
             break;
          default:
             throw new EvalException ($"Unknown token: {token}");
@@ -58,18 +69,14 @@ class Evaluator {
    readonly Stack<TOperator> mOperators = new ();
 
    void ApplyOperator () {
-      // Pop the top operator from the stack
-      TOperator op = mOperators.Pop ();
+      var op = mOperators.Pop ();
       double a;
       try {
-         // Try to pop the top operand from the stack
          a = mOperands.Pop ();
       } catch (Exception) {
-         // If an exception occurs, push the operator back and return
          mOperators.Push (op);
          return;
       }
-      // Switch on the type of the operator and apply it to the operands
       switch (op) {
          case TOpFunction fun:
             mOperands.Push (fun.Evaluate (a));
@@ -84,6 +91,7 @@ class Evaluator {
             break;
       }
    }
+
    void Reset () {
       mOperands.Clear ();
       mOperators.Clear ();
