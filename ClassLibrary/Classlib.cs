@@ -2,17 +2,15 @@
 // Training ~ A training program for new joinees at Metamation, Batch - July 2023.
 // Copyright (c) Metamation India.
 // ------------------------------------------------------------------------------------------------
-//Classlib.cs
+// Classlib.cs
+// Program to implement double ended queue.
 // ------------------------------------------------------------------------------------------------
-
-using System.Xml.Linq;
-
 namespace ClassLibrary {
 
-   public class TDEQueue<T> {
+   public class TDEndQueue<T> {
       #region Constructor -------------------------------------------
       /// <summary>Initializes a new instance of the <see cref="TDEndQue{T}"/> class</summary>
-      public TDEQueue () => mArr = new T[mCapacity];
+      public TDEndQueue () => mArr = new T[mCapacity];
       #endregion
 
       #region Properties --------------------------------------------
@@ -68,7 +66,7 @@ namespace ClassLibrary {
       public T DequeueRear () {
          if (IsEmpty)
             throw new InvalidOperationException ();
-         mRear = (mRear - 1+mCapacity) % mCapacity;
+         mRear = (mRear - 1 + mCapacity) % mCapacity;
          T item = mArr[mRear];
          mArr[mRear] = default!;
          mCount--;
@@ -82,8 +80,6 @@ namespace ClassLibrary {
          if (mCount <= mCapacity / 2) newCapacity = mCount < 5 ? 4 : mCapacity / 2;
          else newCapacity = mCapacity * 2;
          T[] newArray = new T[newCapacity];
-         //if (mFront == mRear) mArr = (mArr[mFront..mCount].Concat (mArr[0..mRear])).ToArray ();
-
          if (mFront < mRear) Array.Copy (mArr, mFront, newArray, 0, mCount);
          else {
             Array.Copy (mArr, mFront, newArray, 0, mCapacity - mFront);
