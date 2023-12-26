@@ -6,6 +6,10 @@
 // Program to solve mathematical expressions.
 // ------------------------------------------------------------------------------------------------
 namespace Training;
+
+public class EvalException : Exception {
+   public EvalException (string message) : base (message) { }
+}
 #region Class Evaluator ---------------------------------------------
 /// <summary>
 /// Represents an expression evaluator that can process mathematical expressions
@@ -18,18 +22,19 @@ public class Evaluator {
    public double Evaluate (string text) {
       Reset ();
       // Create a tokenizer for the expression
-      Tokenizer tokenizer = new (this, text);
       List<Token> tokens = new ();
+      var tokenizer = new Tokenizer (this, text);
       // Tokenize the expression and add tokens to the list
       for (; ; ) {
-         Token t = tokenizer.Next (tokens);
-         if (t is TEnd) break;
-         tokens.Add (t);
+         var token = tokenizer.Next (tokens);
+         if (token is TEnd) break;
+         if (token is TError err) throw new EvalException (err.Message);
+         tokens.Add (token);
       }
       // Check for variable assignment at the beginning of the expression
-      TVariable var = null!;
+      TVariable tVariable = null!;
       if (tokens.Count > 1 && tokens[0] is TVariable tv && tokens[1] is TOpArithmetic { Op: '=' }) {
-         var = tv;
+         tVariable = tv;
          tokens.RemoveRange (0, 2);
       }
       for (int i = 0; i < tokens.Count; i++) {
@@ -45,10 +50,10 @@ public class Evaluator {
       if (mOperands.Count != 1) throw new EvalException ("Excessive use of operands");
       if (BasePriority != 0) throw new EvalException ("Mismatched Paranthesis");
       // Retrieve the final result and round it to 10 decimal places
-      double result = Math.Round (mOperands.Pop (), 10);
+      double f = Math.Round (mOperands.Pop (), 10);
       // If a variable was assigned, store the result in the variables dictionary
-      if (var != null) mVars[var.Name] = result;
-      return result;
+      if (tVariable != null) mVars[tVariable.Name] = f;
+      return f;
    }
 
    /// <summary>Retrieves the value of the specified variable from the evaluator's variables</summary>
@@ -72,16 +77,18 @@ public class Evaluator {
             // If the token is a number, push its value to the operand stack
             mOperands.Push (num.Value);
             break;
-         case TPunctuation p:
-            // If the token is punctuation, check for '(' and apply operators
-            if (p.Punct == '(') break;
-            ApplyOperator ();
-            break;
          case TOperator op:
             // If the token is an operator, handle its processing
-            if (mOperators.Count != 0 && mOperators.Peek ().FinalPriority >= op.FinalPriority)
+            if (mOperators.Count > 0 && mOperators.Peek ().Priority > op.Priority)
                ApplyOperator ();
             mOperators.Push (op);
+            break;
+         case TPunctuation p:
+            // If the token is punctuation, check for '(' and apply operators
+            //if (p.Punct == '(') break;
+            //ApplyOperator ();
+            //break;
+            BasePriority += p.Punct == '(' ? 10 : -10;
             break;
          default:
             // If the token type is unknown, throw an EvalException
@@ -105,15 +112,15 @@ public class Evaluator {
       // Switch on the type of the operator and apply it to the operands
       switch (op) {
          case TOpFunction fun:
-            mOperands.Push (fun.Apply (a));
+            mOperands.Push (fun.Evaluate (a));
             break;
          case TOpArithmetic bin:
             if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
             double b = mOperands.Pop ();
-            mOperands.Push (bin.Apply (b, a));
+            mOperands.Push (bin.Evaluate (b, a));
             break;
          case TOpUnary u:
-            mOperands.Push (u.Apply (a));
+            mOperands.Push (u.Evaluate (a));
             break;
       }
    }
@@ -137,3 +144,4 @@ public class Evaluator {
    #endregion
 }
 #endregion
+

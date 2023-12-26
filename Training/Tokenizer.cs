@@ -35,7 +35,7 @@ class Tokenizer {
                return new TOpArithmetic (mEval, ch);
             case >= '0' and <= '9':
                // Create a literal token
-               return GetLiteral ();
+               return GetNumber ();
             case >= 'a' and <= 'z':
                // Create an identifier token
                return GetIdentifier ();
@@ -59,28 +59,33 @@ class Tokenizer {
    /// Gets the identifier token from the current position in the input text
    /// </summary>
    /// <returns>Identifier token</returns>
+
    Token GetIdentifier () {
       int start = mN - 1;
-      // Extract the identifier from the input text
-      var id = new string (mText
-        .Skip (start)
-        .TakeWhile (char.IsLetter)
-        .ToArray ());
-      // Update the position
-      mN = start + id.Length;
-      // Check if the identifier is a predefined function and create the corresponding token
-      return TOpFunction.funcs.Contains (id) && mText.Any (char.IsDigit)
-          ? new TOpFunction (mEval, id) : new TVariable (mEval, id);
+      while (mN < mText.Length) {
+         char ch = char.ToLower (mText[mN++]);
+         if (ch is >= 'a' and <= 'z') continue;
+         mN--; break;
+      }
+      string sub = mText[start..mN];
+      if (mFuncs.Contains (sub)) return new TOpFunction (mEval, sub);
+      else return new TVariable (mEval, sub);
    }
+   readonly string[] mFuncs = { "sin", "cos", "tan", "sqrt", "log", "exp", "asin", "acos", "atan" };
 
    /// <summary>Gets the literal token from the current position in the input text</summary>
    /// <returns>The literal token</returns>
-   TLiteral GetLiteral () {
+   Token GetNumber () {
       int start = mN - 1;
-      // Read digits and a decimal point to form the literal
-      while (mN < mText.Length && (char.IsDigit (mText[mN]) || mText[mN] == '.')) mN++;
-      // Create a literal token
-      return new TLiteral (mEval, mText[start..mN]);
+      while (mN < mText.Length) {
+         char ch = mText[mN++];
+         if (ch is (>= '0' and <= '9') or '.') continue;
+         mN--; break;
+      }
+      // Now, mN points to the first character of mText that is not part of the number
+      string sub = mText[start..mN];
+      if (double.TryParse (sub, out double f)) return new TLiteral (f);
+      return new TError ($"Invalid number: {sub}");
    }
    #endregion
 
