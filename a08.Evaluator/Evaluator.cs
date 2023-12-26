@@ -6,10 +6,11 @@ class EvalException : Exception {
 
 class Evaluator {
    public double Evaluate (string text) {
+      Reset ();
       List<Token> tokens = new ();
       var tokenizer = new Tokenizer (this, text);
       for (; ; ) {
-         var token = tokenizer.Next ();
+         var token = tokenizer.Next (tokens);
          if (token is TEnd) break;
          if (token is TError err) throw new EvalException (err.Message);
          tokens.Add (token);
@@ -57,12 +58,35 @@ class Evaluator {
    readonly Stack<TOperator> mOperators = new ();
 
    void ApplyOperator () {
-      var op = mOperators.Pop ();
-      var f1 = mOperands.Pop ();
-      if (op is TOpFunction func) mOperands.Push (func.Evaluate (f1));
-      else if (op is TOpArithmetic arith) {
-         var f2 = mOperands.Pop ();
-         mOperands.Push (arith.Evaluate (f2, f1));
+      // Pop the top operator from the stack
+      TOperator op = mOperators.Pop ();
+      double a;
+      try {
+         // Try to pop the top operand from the stack
+         a = mOperands.Pop ();
+      } catch (Exception) {
+         // If an exception occurs, push the operator back and return
+         mOperators.Push (op);
+         return;
       }
+      // Switch on the type of the operator and apply it to the operands
+      switch (op) {
+         case TOpFunction fun:
+            mOperands.Push (fun.Evaluate (a));
+            break;
+         case TOpArithmetic bin:
+            if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
+            double b = mOperands.Pop ();
+            mOperands.Push (bin.Evaluate (b, a));
+            break;
+         case TOpUnary u:
+            mOperands.Push (u.Evaluate (a));
+            break;
+      }
+   }
+   void Reset () {
+      mOperands.Clear ();
+      mOperators.Clear ();
+      BasePriority = 0;
    }
 }

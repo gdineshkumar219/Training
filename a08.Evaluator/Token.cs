@@ -47,11 +47,24 @@ class TOpArithmetic : TOperator {
    }
 }
 
+class TOpUnary : TOperator {
+   public TOpUnary (Evaluator eval, char op) : base (eval) => Op = op;
+   public override int Priority => 6 + mEval.BasePriority;
+   public double Evaluate (double a) =>
+       Op switch {
+          '+' => a,
+          '-' => -a,
+          _ => throw new EvalException ("Unary Operator not Implemented")
+       };
+   public override string ToString () => $"TUnary {Op}";
+   public char Op { get; private set; }
+}
+
 class TOpFunction : TOperator {
    public TOpFunction (Evaluator eval, string name) : base (eval) => Func = name;
    public string Func { get; private set; }
    public override string ToString () => $"func:{Func}:{Priority}";
-   public override int Priority => 4 + mEval.BasePriority;
+   public override int Priority => 5 + mEval.BasePriority;
 
    public double Evaluate (double f) {
       return Func switch {
