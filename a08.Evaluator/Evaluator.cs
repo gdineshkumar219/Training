@@ -16,7 +16,6 @@ public class Evaluator {
          if (token is TError err) throw new EvalException (err.Message);
          tokens.Add (token);
       }
-
       // Check if this is a variable assignment
       TVariable tVariable = null!;
       if (tokens.Count > 1 && tokens[0] is TVariable tv && tokens[1] is TOpArithmetic { Op: '=' }) {
@@ -34,7 +33,7 @@ public class Evaluator {
       if (mOperators.Count > 0) throw new EvalException ("Excessive use of operators");
       if (mOperands.Count != 1) throw new EvalException ("Excessive use of operands");
       if (BasePriority != 0) throw new EvalException ("Mismatched Paranthesis");
-      double f = Math.Round (mOperands.Pop (), 10);
+      double f = mOperands.Pop ();
       if (tVariable != null) mVars[tVariable.Name] = f;
       return f;
    }
@@ -53,15 +52,12 @@ public class Evaluator {
             mOperands.Push (num.Value);
             break;
          case TOperator op:
-            if (mOperators.Count > 0 && mOperators.Peek ().Priority >= op.Priority)
+            while (mOperators.Count > 0 && mOperands.Count > 0 && mOperators.Peek ().Priority >= op.Priority)
                ApplyOperator ();
             mOperators.Push (op);
             break;
          case TPunctuation p:
-            //BasePriority += p.Punct == '(' ? 10 : -10;
-            //break;
-            if (p.Punct == '(') break;
-            ApplyOperator ();
+            BasePriority += p.Punct == '(' ? 10 : -10;
             break;
          default:
             throw new EvalException ($"Unknown token: {token}");
@@ -70,51 +66,20 @@ public class Evaluator {
    readonly Stack<double> mOperands = new ();
    readonly Stack<TOperator> mOperators = new ();
 
-   //void ApplyOperator () {
-   //   var op = mOperators.Pop ();
-   //   double a;
-   //   try {
-   //      a = mOperands.Pop ();
-   //   } catch (Exception) {
-   //      mOperators.Push (op);
-   //      return;
-   //   }
-   //   switch (op) {
-   //      case TOpFunction fun:
-   //         mOperands.Push (fun.Evaluate (a));
-   //         break;
-   //      case TOpArithmetic bin:
-   //         if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
-   //         double b = mOperands.Pop ();
-   //         mOperands.Push (bin.Evaluate (b, a));
-   //         break;
-   //      case TOpUnary u:
-   //         mOperands.Push (u.Evaluate (a));
-   //         break;
-   //   }
-   //}
    void ApplyOperator () {
       var op = mOperators.Pop ();
-      if (op is TOpArithmetic binary) {
-         if (mOperands.Count < 2) throw new EvalException ("Too few operands");
-         double f1 = mOperands.Pop (), f2 = mOperands.Pop ();
-         mOperands.Push (binary.Evaluate (f2, f1));
-      }
-      if (op is TOpUnary unary) {
-         if (mOperands.Count < 1) throw new EvalException ("Too few operands");
-         double f = mOperands.Pop ();
-         mOperands.Push (unary.Evaluate (f));
-      }
-      if (op is TOpFunction func) {
-         if (mOperands.Count < 1) throw new EvalException ("Too few operands");
-         double f = mOperands.Pop ();
-         mOperands.Push (func.Evaluate (f));
-      }
+      var f1 = mOperands.Pop ();
+      double f2;
+      if (op is TOpArithmetic bin) {
+         try {
+            f2 = mOperands.Pop ();
+         } catch (Exception) { throw new EvalException ("Too few operands"); }
+         mOperands.Push (bin.Evaluate (f2, f1));
+      } else mOperands.Push (op is TOpUnary u ? u.Evaluate (f1) : ((TOpFunction)op).Evaluate (f1));
    }
-
    void Reset () {
-      mOperands.Clear ();
       mOperators.Clear ();
+      mOperands.Clear ();
       BasePriority = 0;
    }
 }
