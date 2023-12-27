@@ -14,7 +14,7 @@ class Tokenizer {
          switch (ch) {
             case ' ' or '\t': continue;  // Skip whitespace
             case '+' or '-':
-               return (tokens.Count == 0 || tokens[^1] is TOperator or TPunctuation { Punct: '(' })
+               return (tokens.Count == 0 || tokens[^1] is TOperator or TPunctuation { Punct: '(' } or TOpUnary)
                    ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch);
             case '/' or '*' or '^' or '=':
                return new TOpArithmetic (mEval, ch);

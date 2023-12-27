@@ -1,4 +1,6 @@
-﻿namespace Eval;
+﻿using System;
+
+namespace Eval;
 
 public class EvalException : Exception {
    public EvalException (string message) : base (message) { }
@@ -68,27 +70,45 @@ public class Evaluator {
    readonly Stack<double> mOperands = new ();
    readonly Stack<TOperator> mOperators = new ();
 
+   //void ApplyOperator () {
+   //   var op = mOperators.Pop ();
+   //   double a;
+   //   try {
+   //      a = mOperands.Pop ();
+   //   } catch (Exception) {
+   //      mOperators.Push (op);
+   //      return;
+   //   }
+   //   switch (op) {
+   //      case TOpFunction fun:
+   //         mOperands.Push (fun.Evaluate (a));
+   //         break;
+   //      case TOpArithmetic bin:
+   //         if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
+   //         double b = mOperands.Pop ();
+   //         mOperands.Push (bin.Evaluate (b, a));
+   //         break;
+   //      case TOpUnary u:
+   //         mOperands.Push (u.Evaluate (a));
+   //         break;
+   //   }
+   //}
    void ApplyOperator () {
       var op = mOperators.Pop ();
-      double a;
-      try {
-         a = mOperands.Pop ();
-      } catch (Exception) {
-         mOperators.Push (op);
-         return;
+      if (op is TOpArithmetic binary) {
+         if (mOperands.Count < 2) throw new EvalException ("Too few operands");
+         double f1 = mOperands.Pop (), f2 = mOperands.Pop ();
+         mOperands.Push (binary.Evaluate (f2, f1));
       }
-      switch (op) {
-         case TOpFunction fun:
-            mOperands.Push (fun.Evaluate (a));
-            break;
-         case TOpArithmetic bin:
-            if (mOperands.Count < 1) throw new EvalException ("Insufficient operands provided");
-            double b = mOperands.Pop ();
-            mOperands.Push (bin.Evaluate (b, a));
-            break;
-         case TOpUnary u:
-            mOperands.Push (u.Evaluate (a));
-            break;
+      if (op is TOpUnary unary) {
+         if (mOperands.Count < 1) throw new EvalException ("Too few operands");
+         double f = mOperands.Pop ();
+         mOperands.Push (unary.Evaluate (f));
+      }
+      if (op is TOpFunction func) {
+         if (mOperands.Count < 1) throw new EvalException ("Too few operands");
+         double f = mOperands.Pop ();
+         mOperands.Push (func.Evaluate (f));
       }
    }
 
