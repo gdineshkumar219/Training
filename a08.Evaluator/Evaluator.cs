@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Eval;
+﻿namespace Eval;
 
 public class EvalException : Exception {
    public EvalException (string message) : base (message) { }
