@@ -32,8 +32,9 @@ namespace Training {
          myQueue.EnqueueRear (4);
          myQueue.EnqueueRear (5);
          myQueue.EnqueueRear (6);
+         myQueue.DequeueRear ();
          // Display the final state of the deque
-         Console.WriteLine ($"Final Deque Count: {myQueue.Count}");
+         Console.WriteLine ($"Final Deque Count: {myQueue.Capacity}");
          Console.WriteLine ($"Is Deque Empty: {myQueue.IsEmpty}");
          Console.WriteLine ($"Is Deque Full: {myQueue.IsFull}");
       }
