@@ -54,8 +54,7 @@ public class Evaluator {
                ApplyOperator ();
             mOperators.Push (op);
             break;
-         case TPunctuation p:
-            BasePriority += p.Punct == '(' ? 10 : -10;
+         case TPunctuation:
             break;
          default:
             throw new EvalException ($"Unknown token: {token}");
