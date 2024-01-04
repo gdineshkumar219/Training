@@ -70,9 +70,8 @@ namespace ClassLibrary {
 
       /// <summary>Modifies the capacity of the queue based on its current count</summary>
       void ModifyCapacity () {
-         int newCapacity;
+         int newCapacity = mCapacity * 2;
          if (mCount <= mCapacity / 2) newCapacity = mCount < 5 ? 4 : mCapacity / 2;
-         else newCapacity = mCapacity * 2;
          T[] newArray = new T[newCapacity];
          if (mFront < mRear) Array.Copy (mArr, mFront, newArray, 0, mCount);
          else {
