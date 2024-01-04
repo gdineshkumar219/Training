@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    <ProjectReference Include="G:\a08.Evaluator\Eval.csproj" />
   </ItemGroup>
 
 </Project>

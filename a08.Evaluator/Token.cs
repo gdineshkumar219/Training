@@ -24,38 +24,57 @@ class TVariable : TNumber {
 
 abstract class TOperator : Token {
    protected TOperator (Evaluator eval) => mEval = eval;
-   public abstract int Priority { get; }
+   public int Priority { get; protected set; }
    readonly protected Evaluator mEval;
 }
 
 class TOpArithmetic : TOperator {
-   public TOpArithmetic (Evaluator eval, char ch) : base (eval) => Op = ch;
-   public char Op { get; private set; }
+   public TOpArithmetic (Evaluator eval, char ch) : base (eval) {
+      Op = ch;
+      Priority = sPriority[Op] + mEval.BasePriority;
+   }
+   public char Op { get; set; }
    public override string ToString () => $"op:{Op}:{Priority}";
-   public override int Priority => sPriority[Op] + mEval.BasePriority;
    static Dictionary<char, int> sPriority = new () {
       ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2, ['^'] = 3, ['='] = 4,
    };
-
    public double Evaluate (double a, double b) {
       return Op switch {
-         '+' => a + b, '-' => a - b, 
-         '*' => a * b, '/' => a / b,
+         '+' => a + b,
+         '-' => a - b,
+         '*' => a * b,
+         '/' => a / b,
          '^' => Math.Pow (a, b),
          _ => throw new EvalException ($"Unknown operator: {Op}"),
       };
    }
 }
 
+class TOpUnary : TOperator {
+   public TOpUnary (Evaluator eval, char op) : base (eval) {
+      Op = op;
+      Priority = 6 + mEval.BasePriority;
+   }
+   public char Op { get; private set; }
+   public override string ToString () => $"TUnary {Op}";
+   public double Evaluate (double a) =>
+       Op switch {
+          '+' => a,
+          '-' => -a,
+          _ => throw new EvalException ("Unary Operator not Implemented")
+       };
+}
+
 class TOpFunction : TOperator {
-   public TOpFunction (Evaluator eval, string name) : base (eval) => Func = name;
+   public TOpFunction (Evaluator eval, string name) : base (eval) {
+      Func = name;
+      Priority = 5 + mEval.BasePriority;
+   }
    public string Func { get; private set; }
    public override string ToString () => $"func:{Func}:{Priority}";
-   public override int Priority => 4 + mEval.BasePriority;
-
    public double Evaluate (double f) {
       return Func switch {
-         "sin" => Math.Sin (D2R (f)), 
+         "sin" => Math.Sin (D2R (f)),
          "cos" => Math.Cos (D2R (f)),
          "tan" => Math.Tan (D2R (f)),
          "sqrt" => Math.Sqrt (f),
