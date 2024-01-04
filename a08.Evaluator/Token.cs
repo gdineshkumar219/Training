@@ -47,22 +47,6 @@ class TOpArithmetic : TOperator {
    }
 }
 
-class TOpUnary : TOperator {
-   public TOpUnary (Evaluator eval, char ch) : base (eval) => Op = ch;
-   public char Op { get; private set; }
-   public override string ToString () => $"op:{Op}:{Priority}";
-   public override int Priority => 5+mEval.BasePriority;
-   public double Evaluate (double a) {
-      return Op switch {
-         '+' => a,
-         '-' => -a,
-         _ => throw new EvalException ($"Unknown operator: {Op}"),
-      };
-
-   }
-}
-
-
 class TOpFunction : TOperator {
    public TOpFunction (Evaluator eval, string name) : base (eval) => Func = name;
    public string Func { get; private set; }

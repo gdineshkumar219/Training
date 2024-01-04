@@ -9,7 +9,7 @@ class Evaluator {
       List<Token> tokens = new ();
       var tokenizer = new Tokenizer (this, text);
       for (; ; ) {
-         var token = tokenizer.Next (tokens);
+         var token = tokenizer.Next ();
          if (token is TEnd) break;
          if (token is TError err) throw new EvalException (err.Message);
          tokens.Add (token);
@@ -63,6 +63,6 @@ class Evaluator {
       else if (op is TOpArithmetic arith) {
          var f2 = mOperands.Pop ();
          mOperands.Push (arith.Evaluate (f2, f1));
-      } else mOperands.Push (op is TOpUnary un ? un.Evaluate (f1) : ((TOpFunction)op).Evaluate (f1));
+      }
    }
 }

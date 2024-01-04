@@ -8,18 +8,14 @@ class Tokenizer {
    readonly string mText;     // The input text we're parsing through
    int mN;                    // Position within the text
 
-   public Token Next (List<Token> tokens) {
+   public Token Next () {
       while (mN < mText.Length) {
          char ch = char.ToLower (mText[mN++]);
          switch (ch) {
             case ' ' or '\t': continue;
             case (>= '0' and <= '9') or '.': return GetNumber ();
             case '(' or ')': return new TPunctuation (ch);
-            case '+' or '-' :
-               if (tokens.Count == 0 || tokens[^1] is TOpArithmetic || tokens[^1] is TOpUnary || (tokens[^1] is TPunctuation { Punct: '(' }))
-                  return new TOpUnary (mEval, ch);
-               return new TOpArithmetic (mEval, ch);
-            case '*' or '/' or '^' or '=': return new TOpArithmetic (mEval, ch);
+            case '+' or '-' or '*' or '/' or '^' or '=': return new TOpArithmetic (mEval, ch);
             case >= 'a' and <= 'z': return GetIdentifier ();
             default: return new TError ($"Unknown symbol: {ch}");
          }
