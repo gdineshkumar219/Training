@@ -46,11 +46,10 @@ class Program {
             Console.WriteLine (new string ('-', 70));
          }
       }
-      for (; ; )
-      {
+      for (; ; ) {
          PrintString ($"\nEnter expressions to evaluate or type 'exit' to end\n", "Cyan");
          Console.Write ("> ");
-         string text = Console.ReadLine ()?.Trim ()?.ToLower ();
+         string text = Console.ReadLine ()?.Trim ().ToLower ();
          if (text == "exit") break;
          try {
             double result = eval.Evaluate (text);

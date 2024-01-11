@@ -8,25 +8,29 @@ class Tokenizer {
    readonly string mText;     // The input text we're parsing through
    int mN;                    // Position within the text
 
-   public Token Next (List<Token> tokens) {
+   public Token Next () {
       while (mN < mText.Length) {
          char ch = char.ToLower (mText[mN++]);
+         Token? lastToken;
          switch (ch) {
             case ' ' or '\t': continue;
-            case (>= '0' and <= '9') or '.': return GetNumber ();
+            case (>= '0' and <= '9') or '.': lastToken = GetNumber (); break;
             case '(' or ')':
                mEval.BasePriority += ch == '(' ? 10 : -10;
-               return new TPunctuation (ch);
+               lastToken = new TPunctuation (ch); break;
             case '+' or '-':
-               return (tokens.Count == 0 || tokens[^1] is TOperator or TPunctuation { Punct: '(' } or TOpUnary)
-                   ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch);
-            case '*' or '/' or '^' or '=': return new TOpArithmetic (mEval, ch);
-            case >= 'a' and <= 'z': return GetIdentifier ();
-            default: return new TError ($"Unknown symbol: {ch}");
+               lastToken = (mPrev is null || mPrev is TOperator or TPunctuation { Punct: '(' } or TOpUnary)
+                   ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch); break;
+            case '*' or '/' or '^' or '=': lastToken = new TOpArithmetic (mEval, ch); break;
+            case >= 'a' and <= 'z': lastToken = GetIdentifier (); break;
+            default: lastToken = new TError ($"Unknown symbol: {ch}"); break;
          }
+         mPrev = lastToken;
+         return lastToken;
       }
       return new TEnd ();
    }
+   private Token? mPrev = null;
 
    Token GetIdentifier () {
       int start = mN - 1;
