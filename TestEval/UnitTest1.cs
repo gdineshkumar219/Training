@@ -5,11 +5,10 @@
 // UnitTest1.cs
 // Test program to test Expression Evaluator.
 // ------------------------------------------------------------------------------------------------
-using Eval;
-namespace TestTraining;
+namespace Eval;
 
 [TestClass]
-public class TestTraining {
+public class TestEval {
    [TestMethod]
    public void TestParse () {
       // Valid expressions with their expected results
