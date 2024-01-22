@@ -192,6 +192,8 @@ public class Wordle {
          Console.WriteLine ("                         ");
       }
    }
+
+
    /// <summary> Prints the result of the Wordle game, indicating whether the player won or lost</summary>
    void PrintResult () {
       Console.SetCursorPosition (33, 25);
@@ -243,6 +245,7 @@ public class Wordle {
          Guesses.Clear ();
          guessesLeft = 6;
          currentInput = "";
+         gameWord = new GameWord (WordList.RandomWord ());
          return true;
       } else return false;
    }
