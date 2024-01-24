@@ -59,8 +59,8 @@ public class Wordle {
    static void DisplayBoard () {
       int boardWidth = 29;
       int boardHeight = 17;
-      int startX = (Console.WindowWidth - boardWidth) / 2;
-      int startY = (Console.WindowHeight - boardHeight) / 2;
+      int startX = (Console.LargestWindowWidth - boardWidth) / 2;
+      int startY = (Console.LargestWindowHeight - boardHeight) / 2;
       for (int row = 0; row < 6; row++) {
          Console.SetCursorPosition (startX, startY);
          if (row == 0) {
@@ -113,7 +113,7 @@ public class Wordle {
    /// <param name="row">The row on the game board to be updated</param>
    /// <param name="guess">The guess containing information about correct and incorrect letters</param>
    static void UpdateColor (int row, Guess guess) {
-      int startingCol = 36;
+      int startingCol = 46;
       for (int col = 0; col < guess.State.Length; col++) {
          Console.SetCursorPosition (startingCol + col * 4, row + 2);
          ConsoleColor color = WordleHelpers.StateColor (guess.State[col]);
@@ -140,7 +140,7 @@ public class Wordle {
    /// <summary>Prints the colored alphabet on the console based on the given dictionary</summary>
    /// <param name="charColorDictionary">The dictionary mapping letters to colors</param>
    static void PrintColoredAlphabets (Dictionary<char, ConsoleColor> charColorDictionary) {
-      int startingCol = 32;
+      int startingCol = 42;
       int chRow = 19, i = 0;
       foreach (var entry in charColorDictionary) {
          Console.SetCursorPosition (startingCol + 1, chRow);
@@ -150,7 +150,7 @@ public class Wordle {
          i++;
          if (i % 7 == 0) {
             Console.WriteLine ("\n");
-            startingCol = 32;
+            startingCol = 42;
             chRow++;
          } else startingCol += 4;
       }
@@ -164,7 +164,7 @@ public class Wordle {
       if (char.IsLetter (keyInfo.KeyChar) && currentInput.Length < 5) {
          currentInput += keyInfo.KeyChar;
          currentCol = currentInput.Length * 4;
-         Console.SetCursorPosition (currentCol + 32, currentRow + 3);
+         Console.SetCursorPosition (currentCol + 42, currentRow + 3);
          Console.Write ($" {keyInfo.KeyChar.ToString ().ToUpper ()}");
       } else if (keyInfo.Key == ConsoleKey.Enter && currentInput.Length == 5) {
          Guess guess = MakeGuess (currentInput.ToUpper ());
@@ -178,17 +178,17 @@ public class Wordle {
             currentRow += 2;
             guessesLeft--;
          } else {
-            Console.SetCursorPosition (32, 25);
+            Console.SetCursorPosition (42, 25);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine ($"{currentInput} is invalid");
             Console.ResetColor ();
          }
       } else if (keyInfo.Key == ConsoleKey.Backspace && currentInput.Length > 0) {
-         Console.SetCursorPosition (currentCol + 32, currentRow + 3);
+         Console.SetCursorPosition (currentCol + 42, currentRow + 3);
          if (currentCol <= 22) Console.Write ($" · ");
          currentInput = currentInput[..^1];
          currentCol = currentInput.Length * 4 + 1;
-         Console.SetCursorPosition (32, 25);
+         Console.SetCursorPosition (42, 25);
          Console.WriteLine ("                         ");
       }
    }
@@ -196,7 +196,7 @@ public class Wordle {
 
    /// <summary> Prints the result of the Wordle game, indicating whether the player won or lost</summary>
    void PrintResult () {
-      Console.SetCursorPosition (33, 25);
+      Console.SetCursorPosition (43, 25);
       if (GameOver () && Guesses.Any (IsGuessCorrect)) {
          Console.ForegroundColor = ConsoleColor.Green;
          Console.WriteLine ($"You found the word in {6 - guessesLeft} tries");
@@ -214,18 +214,21 @@ public class Wordle {
 
    /// <summary>Runs the Wordle game, allowing the player to make guesses and play the game</summary>
    public void Run () {
+      Console.WindowWidth = Console.LargestWindowWidth;
+      Console.WindowHeight = Console.LargestWindowHeight;
+      int x=(Console.LargestWindowWidth + Console.LargestWindowWidth)/2;
       Console.OutputEncoding = Encoding.UTF8;
       do {
          Console.CursorVisible = false;
          Console.Clear ();
-         Console.WriteLine ("\n\t\t\t\t\t  WORDLE");
+         Console.WriteLine ("\n\t\t\t\t\t\t  WORDLE");
          Console.WriteLine ();
          int currentRow = 3;
          DisplayBoard ();
          alpColor = GetAlpColorDictionary ();
          while (!GameOver ()) {
             int currentCol = (currentInput.Length * 4) + 4;
-            Console.SetCursorPosition (currentCol + 32, currentRow + 3);
+            Console.SetCursorPosition (currentCol + 42, currentRow + 3);
             if (currentCol <= 22) Console.Write ($" ◌ ");
             ConsoleKeyInfo keyInfo = Console.ReadKey (true);
             UpdateGameState (keyInfo, ref currentRow, ref currentCol);
@@ -252,8 +255,11 @@ public class Wordle {
 }
 class Program {
    static void Main () {
+      //Console.WindowWidth = Console.LargestWindowWidth;
+      //Console.WindowHeight = Console.LargestWindowHeight;
       do {
          Console.Clear ();
+         Console.CursorVisible = false;
          Wordle game = new ();
          game.Run ();
          Console.WriteLine ("Do you want to play again? (Y/N)");
