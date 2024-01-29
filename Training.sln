@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eval", "G:\a08.Evaluator\Eval.csproj", "{BBD7DCC3-A2BC-4BCE-9040-0D68548C82CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eval", "..\a08.Evaluator\Eval.csproj", "{BBD7DCC3-A2BC-4BCE-9040-0D68548C82CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestEval", "G:\TestEval\TestEval.csproj", "{8F555E91-414B-4A2B-8388-093051AEB406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestEval", "..\TestEval\TestEval.csproj", "{8F555E91-414B-4A2B-8388-093051AEB406}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
