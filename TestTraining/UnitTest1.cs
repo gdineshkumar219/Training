@@ -12,17 +12,20 @@ namespace TestTraining;
 public class UnitTest1 {
    [TestMethod]
    public void TestRearEnqueue () {
-      // Enqueue elements at the rear of the queue
+      // Input: Enqueue the elements 1, 2, 3, and 4 at the rear of the queue
       for (int i = 1; i <= 4; i++) mQ.EnqueueRear (i);
-      // Dequeue elements from the front of the queue and assert the order
-      for (int j = 1; j <= 4; j++) Assert.AreEqual (j, mQ.DequeueFront ());
+      // Expected Output: Dequeue elements from the front and assert their order
+      // The order should be 1, 2, 3, 4
+      for (int j = 1; j <= 4; j++)
+         Assert.AreEqual (j, mQ.DequeueFront ());
    }
 
    [TestMethod]
    public void TestFrontEnqueue () {
-      // Enqueue elements at the front of the queue
+      // Input: Enqueue the elements 1, 2, 3, and 4 at the front of the queue
       for (int i = 1; i <= 4; i++) mQ.EnqueueFront (i);
-      // Dequeue elements from the rear of the queue and assert the order
+      // Expected Output: Dequeue elements from the rear and assert their order
+      // The order should be 1, 2, 3, 4
       for (int j = 1; j <= 4; j++) Assert.AreEqual (j, mQ.DequeueRear ());
    }
 
