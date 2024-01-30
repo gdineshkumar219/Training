@@ -22,7 +22,7 @@ public enum GameStates {
 /// Represents a Wordle game with the functionality to make guesses and display the game board
 /// </summary>
 public class Wordle {
-   private GameWord gameWord = new ("ALGAE"/*WordList.RandomWord ()*/);
+   private GameWord gameWord = new (WordList.RandomWord ());
    public List<Guess> Guesses { get; } = new List<Guess> ();
    int guessesLeft = 6;
    string currentInput = "";
@@ -98,7 +98,7 @@ public class Wordle {
          SetCursorPosition (startX + (i % 7) * 4 - 3, startY + 2);
          Write ($" {c}");
          i++;
-         if (i % 7 == 0) startY ++;
+         if (i % 7 == 0) startY++;
       }
       SetCursorPosition (startX - 2, startY + 3);
       Write ("──────────────────────────");
