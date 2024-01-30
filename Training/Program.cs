@@ -232,7 +232,6 @@ public class Wordle {
          mGuessesLeft = 6;
          mCurrentInput = "";
          mGameWord = new GameWord (WordList.RandomWord ());
-         SetCursorPosition (startX + 4, 1);
          return true;
       } else return false;
    }
