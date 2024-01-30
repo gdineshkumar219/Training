@@ -22,15 +22,14 @@ public enum GameStates {
 /// Represents a Wordle game with the functionality to make guesses and display the game board
 /// </summary>
 public class Wordle {
-   private GameWord gameWord = new (WordList.RandomWord ());
+   private GameWord gameWord = new ("ALGAE"/*WordList.RandomWord ()*/);
    public List<Guess> Guesses { get; } = new List<Guess> ();
    int guessesLeft = 6;
    string currentInput = "";
    static Dictionary<char, ConsoleColor> alpColor;
    static readonly int boardWidth = 26;
    static readonly int boardHeight = 19;
-   static int startX = LargestWindowWidth / 2 - boardWidth;
-   static int startY = Math.Abs (LargestWindowHeight / 2 - boardHeight);
+   static int startX = WindowWidth / 2 - boardWidth;
 
    /// <summary> Makes a guess in the Wordle game</summary>
    /// <param name="word">The word guessed by the player</param>
@@ -62,6 +61,10 @@ public class Wordle {
 
    /// <summary> Displays the Wordle game board on the console </summary>
    static void DisplayBoard () {
+      int boardWidth = 26;
+      int boardHeight = 19;
+      int startX = WindowWidth / 2 - boardWidth;
+      int startY = Math.Abs ((WindowHeight / 2) - boardHeight);
       for (int row = 0; row < 6; row++) {
          SetCursorPosition (startX, startY);
          if (row == 0) {
@@ -95,21 +98,16 @@ public class Wordle {
          SetCursorPosition (startX + (i % 7) * 4 - 3, startY + 2);
          Write ($" {c}");
          i++;
-         if (i % 7 == 0) startY += 1;
+         if (i % 7 == 0) startY ++;
       }
       SetCursorPosition (startX - 2, startY + 3);
       Write ("──────────────────────────");
    }
 
-
    /// <summary>Checks if a given guess is correct</summary>
    /// <param name="guess">The <see cref="Guess"/> to be checked</param>
    /// <returns>True if the guess is correct; otherwise, false</returns>
-   static bool IsGuessCorrect (Guess guess) {
-      foreach (GameStates state in guess.State)
-         if (state != GameStates.CORRECT) return false;
-      return true;
-   }
+   static bool IsGuessCorrect (Guess guess) => guess.State.All (state => state == GameStates.CORRECT);
 
    /// <summary> Updates the color of letters on the game board based on the guess </summary>
    /// <param name="row">The row on the game board to be updated</param>
@@ -147,6 +145,7 @@ public class Wordle {
       foreach (var entry in charColorDictionary) {
          SetCursorPosition (startingCol + 1, chRow);
          ForegroundColor = entry.Value;
+         if (ForegroundColor == ConsoleColor.DarkGray) ForegroundColor = BackgroundColor;
          Write (entry.Key + "  ");
          ResetColor ();
          i++;
@@ -216,10 +215,8 @@ public class Wordle {
    public void Run () {
       OutputEncoding = Encoding.UTF8;
       do {
-         CursorVisible = false;
-         WindowWidth = LargestWindowWidth;
-         WindowHeight = LargestWindowHeight;
          Clear ();
+         CursorVisible = false;
          SetCursorPosition (startX + 6, boardWidth - 25);
          WriteLine ("WORDLE\n");
          int currentRow = 3;
