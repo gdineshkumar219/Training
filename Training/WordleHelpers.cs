@@ -1,7 +1,9 @@
 ﻿namespace Training;
 
+# region WordleHelpers -------------------------------------------------------------------------
 /// <summary> Provides helper methods for the Wordle game</summary>
 public class WordleHelpers {
+   #region Methods -----------------------------------------------------------------------------
    /// <summary>Maps a ConsoleColor to the corresponding GameStates </summary>
    /// <param name="color">The ConsoleColor to be mapped</param>
    /// <returns>The GameStates corresponding to the ConsoleColor</returns>
@@ -21,4 +23,6 @@ public class WordleHelpers {
       GameStates.CORRECT => ConsoleColor.Green,
       _ => Console.ForegroundColor
    };
+   #endregion
 }
+#endregion

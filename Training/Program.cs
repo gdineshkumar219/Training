@@ -8,6 +8,8 @@
 using System.Text;
 using static System.Console;
 namespace Training;
+
+#region Enums ----------------------------------------------------------------------------------
 /// <summary>Represents the possible states of a letter in the Wordle game</summary>
 public enum GameStates {
    NONE,
@@ -15,28 +17,22 @@ public enum GameStates {
    PRESENT,
    CORRECT
 }
+#endregion
 
+#region Wordle ---------------------------------------------------------------------------------
 /// <summary>
 /// Represents a Wordle game with the functionality to make guesses and display the game board
 /// </summary>
 public class Wordle {
-   private GameWord gameWord = new (WordList.RandomWord ());
-   public List<Guess> mGuesses { get; } = new List<Guess> ();
-   int mGuessesLeft = 6;
-   string mCurrentInput = "";
-   static Dictionary<char, ConsoleColor> alpColor;
-   static readonly int mBoardWidth = 21;
-   static readonly int boardHeight = 17;
-   static int startX = WindowWidth / 2 - mBoardWidth - 5;
-   int mCurrentCol, mCurrentRow;
+   #region Methods -----------------------------------------------------------------------------
    /// <summary> Makes a guess in the Wordle game</summary>
    /// <param name="word">The word guessed by the player</param>
    /// <returns>The <see cref="Guess"/> object representing the result of the guess </returns>
    Guess MakeGuess (string word) {
       GameStates[] guessState = new GameStates[word.Length];
-      Dictionary<char, int> tempLetterCount = new (gameWord.UniqueCharCnt);
+      Dictionary<char, int> tempLetterCount = new (mGameWord.UniqueCharCnt);
       for (int i = 0; i < word.Length; i++) {
-         if (word[i] == gameWord.Word[i]) {
+         if (word[i] == mGameWord.Word[i]) {
             guessState[i] = GameStates.CORRECT;
             if (tempLetterCount[word[i]] > 0) tempLetterCount[word[i]]--;
             else {
@@ -136,7 +132,7 @@ public class Wordle {
    /// <param name="charColorDictionary">The dictionary mapping letters to colors</param>
    static void PrintColoredAlphabets (Dictionary<char, ConsoleColor> charColorDictionary) {
       int startingCol = startX - 2;
-      int chRow = boardHeight + 1, i = 0;
+      int chRow = mBoardHeight + 1, i = 0;
       foreach (var entry in charColorDictionary) {
          SetCursorPosition (startingCol, chRow);
          ForegroundColor = entry.Value;
@@ -171,7 +167,7 @@ public class Wordle {
             }
             mCurrentInput = "";
             mCurrentRow += 2;
-            mGuessesLeft++;
+            mGuessesLeft--;
          } else {
             SetCursorPosition (startX + 3, 25);
             ForegroundColor = ConsoleColor.Yellow;
@@ -196,21 +192,15 @@ public class Wordle {
          ResetColor ();
       } else if (GameOver () && !mGuesses.Any (IsGuessCorrect)) {
          ForegroundColor = ConsoleColor.Red;
-         WriteLine ($"Sorry, you lost.The word was:{gameWord.Word} ");
+         WriteLine ($"Sorry, you lost.The word was:{mGameWord.Word} ");
          ResetColor ();
       } else WriteLine ();
    }
    /// <summary>Checks if the game is over based on the number of remaining guesses and correct guesses</summary>
    bool GameOver () => mGuessesLeft <= 0 || mGuesses.Any (IsGuessCorrect);
    /// <summary>Runs the Wordle game, allowing the player to make guesses and play the game</summary>
-   void Initialize () {
-      mGuesses.Clear ();
-      mGuessesLeft = 6;
-      mCurrentInput = "";
-      gameWord = new GameWord (WordList.RandomWord ());
-   }
+
    public void Run () {
-      Initialize ();
       OutputEncoding = Encoding.UTF8;
       do {
          Clear ();
@@ -238,10 +228,31 @@ public class Wordle {
       WriteLine ("Do you want to continue? (Y/N)");
       ConsoleKeyInfo key = ReadKey (true);
       if (key.Key == ConsoleKey.Y) {
+         mGuesses.Clear ();
+         mGuessesLeft = 6;
+         mCurrentInput = "";
+         mGameWord = new GameWord (WordList.RandomWord ());
+         SetCursorPosition (startX + 4, 1);
          return true;
       } else return false;
    }
+   #endregion
+
+   #region Fields ------------------------------------------------------------------------------
+   GameWord mGameWord = new (WordList.RandomWord ());
+   public List<Guess> mGuesses { get; } = new List<Guess> ();
+   int mGuessesLeft = 6;
+   string mCurrentInput = "";
+   static Dictionary<char, ConsoleColor> alpColor;
+   static readonly int mBoardWidth = 21;
+   static readonly int mBoardHeight = 17;
+   static int startX = WindowWidth / 2 - mBoardWidth - 5;
+   int mCurrentCol, mCurrentRow;
+   #endregion
 }
+#endregion
+
+#region Program --------------------------------------------------------------------------------
 class Program {
    static void Main () {
       do {
@@ -254,3 +265,4 @@ class Program {
       } while (true);
    }
 }
+#endregion

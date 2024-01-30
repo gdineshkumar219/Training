@@ -1,12 +1,11 @@
 ﻿namespace Training;
 
+#region Guess ----------------------------------------------------------------------------------
 /// <summary>
 /// Represents a player's guess in the Wordle game.
 /// </summary>
 public class Guess {
-   public string Word { get; }
-   public GameStates[] State { get; }
-
+   #region Constructor -------------------------------------------------------------------------
    /// <summary>
    /// Initializes a new instance of the <see cref="Guess"/> class with the specified word and state
    /// </summary>
@@ -16,4 +15,13 @@ public class Guess {
       Word = word;
       State = state;
    }
+   #endregion
+
+   #region Properties --------------------------------------------------------------------------
+   public string Word { get; }
+   public GameStates[] State { get; }
+   #endregion
+
+
 }
+#endregion

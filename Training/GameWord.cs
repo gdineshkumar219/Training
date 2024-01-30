@@ -1,12 +1,16 @@
 ﻿namespace Training;
 
+#region GameWord -------------------------------------------------------------------------------
 /// <summary>
 /// Represents a word in the Wordle game, providing information about the word and its unique character count
 /// </summary>
 public class GameWord {
+   #region Properties --------------------------------------------------------------------------
    public string Word { get; }
    public Dictionary<char, int> UniqueCharCnt { get; }
+   #endregion
 
+   #region Constructor -------------------------------------------------------------------------
    /// <summary>
    /// Initializes a new instance of the <see cref="GameWord"/> class with the specified word
    /// </summary>
@@ -20,4 +24,6 @@ public class GameWord {
          else UniqueCharCnt.Add (letter, 1);
       }
    }
+   #endregion
 }
+#endregion
