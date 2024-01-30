@@ -7,9 +7,7 @@
 // --------------------------------------------------------------------------------------------
 using System.Text;
 using static System.Console;
-
 namespace Training;
-
 /// <summary>Represents the possible states of a letter in the Wordle game</summary>
 public enum GameStates {
    NONE,
@@ -23,14 +21,14 @@ public enum GameStates {
 /// </summary>
 public class Wordle {
    private GameWord gameWord = new (WordList.RandomWord ());
-   public List<Guess> Guesses { get; } = new List<Guess> ();
-   int guessesLeft = 6;
-   string currentInput = "";
+   public List<Guess> mGuesses { get; } = new List<Guess> ();
+   int mGuessesLeft = 6;
+   string mCurrentInput = "";
    static Dictionary<char, ConsoleColor> alpColor;
-   static readonly int boardWidth = 26;
-   static readonly int boardHeight = 19;
-   static int startX = WindowWidth / 2 - boardWidth;
-
+   static readonly int mBoardWidth = 21;
+   static readonly int boardHeight = 17;
+   static int startX = WindowWidth / 2 - mBoardWidth - 5;
+   int mCurrentCol, mCurrentRow;
    /// <summary> Makes a guess in the Wordle game</summary>
    /// <param name="word">The word guessed by the player</param>
    /// <returns>The <see cref="Guess"/> object representing the result of the guess </returns>
@@ -55,7 +53,7 @@ public class Wordle {
          } else guessState[i] = GameStates.ABSENT;
       }
       Guess guess = new (word, guessState);
-      Guesses.Add (guess);
+      mGuesses.Add (guess);
       return guess;
    }
 
@@ -75,8 +73,7 @@ public class Wordle {
          }
          SetCursorPosition (startX, startY);
          Write ("│");
-         for (int col = 0; col < 4; col++) Write (" · │");
-         WriteLine (" · │");
+         for (int col = 0; col < 5; col++) Write (" · │");
          if (row < 5) {
             SetCursorPosition (startX, ++startY);
             Write ("├");
@@ -108,14 +105,13 @@ public class Wordle {
    /// <param name="guess">The <see cref="Guess"/> to be checked</param>
    /// <returns>True if the guess is correct; otherwise, false</returns>
    static bool IsGuessCorrect (Guess guess) => guess.State.All (state => state == GameStates.CORRECT);
-
    /// <summary> Updates the color of letters on the game board based on the guess </summary>
    /// <param name="row">The row on the game board to be updated</param>
    /// <param name="guess">The guess containing information about correct and incorrect letters</param>
    static void UpdateColor (int row, Guess guess) {
       int startingCol = startX + 1;
       for (int col = 0; col < guess.State.Length; col++) {
-         SetCursorPosition (startingCol + col * 4, row + 2);
+         SetCursorPosition (startingCol + col * 4, row);
          ConsoleColor color = WordleHelpers.StateColor (guess.State[col]);
          if (guess.State[col] != GameStates.NONE) {
             char currentChar = guess.Word[col];
@@ -136,14 +132,13 @@ public class Wordle {
       for (char c = 'A'; c <= 'Z'; c++) colorAlp[c] = WordleHelpers.StateColor (GameStates.NONE);
       return colorAlp;
    }
-
    /// <summary>Prints the colored alphabet on the console based on the given dictionary</summary>
    /// <param name="charColorDictionary">The dictionary mapping letters to colors</param>
    static void PrintColoredAlphabets (Dictionary<char, ConsoleColor> charColorDictionary) {
-      int startingCol = startX - 3;
-      int chRow = 19, i = 0;
+      int startingCol = startX - 2;
+      int chRow = boardHeight + 1, i = 0;
       foreach (var entry in charColorDictionary) {
-         SetCursorPosition (startingCol + 1, chRow);
+         SetCursorPosition (startingCol, chRow);
          ForegroundColor = entry.Value;
          if (ForegroundColor == ConsoleColor.DarkGray) ForegroundColor = BackgroundColor;
          Write (entry.Key + "  ");
@@ -151,100 +146,98 @@ public class Wordle {
          i++;
          if (i % 7 == 0) {
             WriteLine ("\n");
-            startingCol = startX - 3;
+            startingCol = startX - 2;
             chRow++;
          } else startingCol += 4;
       }
    }
-
    /// <summary>Updates the game state based on the player's input</summary>
    /// <param name="keyInfo">The key information representing the player's input</param>
-   /// <param name="currentRow">The current row on the game board</param>
-   /// <param name="currentCol">The current column on the game board</param>
-   void UpdateGameState (ConsoleKeyInfo keyInfo, ref int currentRow, ref int currentCol) {
-      if (char.IsLetter (keyInfo.KeyChar) && currentInput.Length < 5) {
-         currentInput += keyInfo.KeyChar;
-         currentCol = currentInput.Length * 4;
-         SetCursorPosition (currentCol + startX - 3, currentRow + 3);
+   /// <param name="mCurrentRow">The current row on the game board</param>
+   /// <param name="mCurrentCol">The current column on the game board</param>
+   void UpdateGameState (ConsoleKeyInfo keyInfo) {
+      if (char.IsLetter (keyInfo.KeyChar) && mCurrentInput.Length < 5) {
+         mCurrentInput += keyInfo.KeyChar;
+         mCurrentCol = mCurrentInput.Length * 4;
+         SetCursorPosition (mCurrentCol + startX - 3, mCurrentRow);
          Write ($" {keyInfo.KeyChar.ToString ().ToUpper ()}");
-      } else if (keyInfo.Key == ConsoleKey.Enter && currentInput.Length == 5) {
-         Guess guess = MakeGuess (currentInput.ToUpper ());
-         if (WordList.IsWord (currentInput)) {
-            UpdateColor (currentRow + 1, guess);
+      } else if (keyInfo.Key == ConsoleKey.Enter && mCurrentInput.Length == 5) {
+         Guess guess = MakeGuess (mCurrentInput.ToUpper ());
+         if (WordList.IsWord (mCurrentInput)) {
+            UpdateColor (mCurrentRow, guess);
             if (IsGuessCorrect (guess)) {
-               currentRow = 0;
+               mCurrentRow = 0;
                WriteLine ("\n");
             }
-            currentInput = "";
-            currentRow += 2;
-            guessesLeft--;
+            mCurrentInput = "";
+            mCurrentRow += 2;
+            mGuessesLeft++;
          } else {
             SetCursorPosition (startX + 3, 25);
             ForegroundColor = ConsoleColor.Yellow;
-            WriteLine ($"{currentInput.ToUpper ()} is invalid");
+            WriteLine ($"{mCurrentInput.ToUpper ()} is invalid");
             ResetColor ();
          }
-      } else if (keyInfo.Key == ConsoleKey.Backspace && currentInput.Length > 0) {
-         SetCursorPosition (currentCol, currentRow + 3);
-         if (currentCol <= startX + boardWidth - 8) Write ($" · ");
-         currentInput = currentInput[..^1];
-         currentCol = currentInput.Length * 4 + 1;
-         SetCursorPosition (startX, boardHeight + 6);
+      } else if (keyInfo.Key == ConsoleKey.Backspace && mCurrentInput.Length > 0) {
+         SetCursorPosition (mCurrentCol, mCurrentRow);
+         if (mCurrentCol < startX + mBoardWidth) Write ($" · ");
+         mCurrentInput = mCurrentInput[..^1];
+         mCurrentCol = mCurrentInput.Length * 4 + 1;
+         SetCursorPosition (startX + 3, 25);
          WriteLine ("                         ");
       }
    }
-
    /// <summary> Prints the result of the Wordle game, indicating whether the player won or lost</summary>
    void PrintResult () {
-      SetCursorPosition (startX - 4, boardHeight + 5);
-      if (GameOver () && Guesses.Any (IsGuessCorrect)) {
+      SetCursorPosition (startX, 25);
+      if (GameOver () && mGuesses.Any (IsGuessCorrect)) {
          ForegroundColor = ConsoleColor.Green;
-         WriteLine ($"You found the word in {6 - guessesLeft} tries");
+         WriteLine ($"You found the word in {6 - mGuessesLeft} tries");
          ResetColor ();
-      } else if (GameOver () && !Guesses.Any (IsGuessCorrect)) {
+      } else if (GameOver () && !mGuesses.Any (IsGuessCorrect)) {
          ForegroundColor = ConsoleColor.Red;
          WriteLine ($"Sorry, you lost.The word was:{gameWord.Word} ");
          ResetColor ();
       } else WriteLine ();
    }
-
    /// <summary>Checks if the game is over based on the number of remaining guesses and correct guesses</summary>
-   bool GameOver () => guessesLeft <= 0 || Guesses.Any (IsGuessCorrect);
-
+   bool GameOver () => mGuessesLeft <= 0 || mGuesses.Any (IsGuessCorrect);
    /// <summary>Runs the Wordle game, allowing the player to make guesses and play the game</summary>
+   void Initialize () {
+      mGuesses.Clear ();
+      mGuessesLeft = 6;
+      mCurrentInput = "";
+      gameWord = new GameWord (WordList.RandomWord ());
+   }
    public void Run () {
+      Initialize ();
       OutputEncoding = Encoding.UTF8;
       do {
          Clear ();
          CursorVisible = false;
-         SetCursorPosition (startX + 6, boardWidth - 25);
+         SetCursorPosition (startX + 4, 1);
          WriteLine ("WORDLE\n");
-         int currentRow = 3;
+         mCurrentRow = 5;
          DisplayBoard ();
          alpColor = GetAlpColorDictionary ();
          while (!GameOver ()) {
-            int currentCol = startX + (currentInput.Length * 4) + 1;
-            SetCursorPosition (currentCol, currentRow + 3);
-            if (currentCol <= startX + boardWidth - 8) Write ($" ◌ ");
+            mCurrentCol = startX + (mCurrentInput.Length * 4) + 1;
+            SetCursorPosition (mCurrentCol, mCurrentRow);
+            if (mCurrentCol < startX + mBoardWidth) Write ($" ◌ ");
             ConsoleKeyInfo keyInfo = ReadKey (true);
-            UpdateGameState (keyInfo, ref currentRow, ref currentCol);
-            SetCursorPosition (currentCol + 4, currentRow + 3);
+            UpdateGameState (keyInfo);
+            SetCursorPosition (mCurrentCol + 4, mCurrentRow);
          }
          PrintResult ();
       } while (PlayAgain ());
    }
-
    /// <summary>Asks the player if they want to play the game again</summary>
    /// <returns>True if the player wants to play again, otherwise false</returns>
    bool PlayAgain () {
-      SetCursorPosition (startX - 4, boardHeight + 8);
+      SetCursorPosition (startX, 26);
       WriteLine ("Do you want to continue? (Y/N)");
       ConsoleKeyInfo key = ReadKey (true);
       if (key.Key == ConsoleKey.Y) {
-         Guesses.Clear ();
-         guessesLeft = 6;
-         currentInput = "";
-         gameWord = new GameWord (WordList.RandomWord ());
          return true;
       } else return false;
    }
