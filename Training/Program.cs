@@ -3,13 +3,19 @@
 // Copyright (c) Metamation India.                                              
 // ------------------------------------------------------------------------
 // Program.cs
-// Simple Program to Print the text 'Hello, World!' in Console
+// Program to write anagrams in a file
 // --------------------------------------------------------------------------------------------
+using ClassLibrary;
 
 namespace Training {
+
    internal class Program {
-      static void Main (string[] args) {
-         Console.WriteLine ("Hello, World!");
+      static void Main () {
+         var filePath = "C:\\etc\\words.txt";
+         string[] words = File.ReadAllLines (filePath);
+         Dictionary<string, List<string>> anagramGroups = Anagrams.FindAnagrams (words);
+         var outputFilePath = "C:\\etc\\anagram.txt";
+         Anagrams.WriteOutputToFile (anagramGroups, outputFilePath);
       }
    }
 }
