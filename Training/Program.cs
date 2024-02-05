@@ -54,60 +54,57 @@ public class Wordle {
    }
 
    /// <summary> Displays the Wordle game board on the console </summary>
-   static void DisplayBoard () {
-      int boardWidth = 26;
-      int boardHeight = 19;
-      int startX = WindowWidth / 2 - boardWidth;
-      int startY = Math.Abs ((WindowHeight / 2) - boardHeight);
-      for (int row = 0; row < 6; row++) {
-         SetCursorPosition (startX, startY);
+   void DisplayBoard () {
+      int currentRow = mCurrentRow;
+      for (int row = 0; row < mGuessesLeft; row++) {
+         SetCursorPosition (startX, mCurrentRow);
          if (row == 0) {
             Write ("┌");
             for (int col = 0; col < 4; col++) Write ("───┬");
             WriteLine ("───┐");
-            startY++;
+            mCurrentRow++;
          }
-         SetCursorPosition (startX, startY);
+         SetCursorPosition (startX, mCurrentRow);
          Write ("│");
-         for (int col = 0; col < 5; col++) Write (" · │");
+         for (int col = 0; col < mWordLen; col++) Write (" · │");
          if (row < 5) {
-            SetCursorPosition (startX, ++startY);
+            SetCursorPosition (startX, ++mCurrentRow);
             Write ("├");
-            for (int col = 0; col < 4; col++) {
-               Write ("───┼");
-            }
+            for (int col = 0; col < 4; col++) Write ("───┼");
             WriteLine ("───┤");
          }
-         ++startY;
+         ++mCurrentRow;
       }
-      SetCursorPosition (startX, startY);
+      SetCursorPosition (startX, mCurrentRow);
       Write ("└");
       for (int col = 0; col < 4; col++) Write ("───┴");
       WriteLine ("───┘");
-      SetCursorPosition (startX - 2, startY + 1);
+      SetCursorPosition (startX - 2, mCurrentRow + 1);
       WriteLine ("──────────────────────────");
       int i = 0;
       for (char c = 'A'; c <= 'Z'; c++) {
-         SetCursorPosition (startX + (i % 7) * 4 - 3, startY + 2);
+         SetCursorPosition (startX + (i % 7) * mCellWidth - 3, mCurrentRow + 2);
          Write ($" {c}");
          i++;
-         if (i % 7 == 0) startY++;
+         if (i % 7 == 0) mCurrentRow++;
       }
-      SetCursorPosition (startX - 2, startY + 3);
+      SetCursorPosition (startX - 2, mCurrentRow + 3);
       Write ("──────────────────────────");
+      mCurrentRow = currentRow + 1; // goes to next row from initial row
    }
 
    /// <summary>Checks if a given guess is correct</summary>
    /// <param name="guess">The <see cref="Guess"/> to be checked</param>
    /// <returns>True if the guess is correct; otherwise, false</returns>
    static bool IsGuessCorrect (Guess guess) => guess.State.All (state => state == GameStates.CORRECT);
+
    /// <summary> Updates the color of letters on the game board based on the guess </summary>
    /// <param name="row">The row on the game board to be updated</param>
    /// <param name="guess">The guess containing information about correct and incorrect letters</param>
    static void UpdateColor (int row, Guess guess) {
       int startingCol = startX + 1;
       for (int col = 0; col < guess.State.Length; col++) {
-         SetCursorPosition (startingCol + col * 4, row);
+         SetCursorPosition (startingCol + col * mCellWidth, row);
          ConsoleColor color = WordleHelpers.StateColor (guess.State[col]);
          if (guess.State[col] != GameStates.NONE) {
             char currentChar = guess.Word[col];
@@ -128,11 +125,12 @@ public class Wordle {
       for (char c = 'A'; c <= 'Z'; c++) colorAlp[c] = WordleHelpers.StateColor (GameStates.NONE);
       return colorAlp;
    }
+
    /// <summary>Prints the colored alphabet on the console based on the given dictionary</summary>
    /// <param name="charColorDictionary">The dictionary mapping letters to colors</param>
    static void PrintColoredAlphabets (Dictionary<char, ConsoleColor> charColorDictionary) {
       int startingCol = startX - 2;
-      int chRow = mBoardHeight + 1, i = 0;
+      int chRow = mBoardHeight + 2, i = 0;
       foreach (var entry in charColorDictionary) {
          SetCursorPosition (startingCol, chRow);
          ForegroundColor = entry.Value;
@@ -144,87 +142,91 @@ public class Wordle {
             WriteLine ("\n");
             startingCol = startX - 2;
             chRow++;
-         } else startingCol += 4;
+         } else startingCol += mCellWidth;
       }
    }
+
    /// <summary>Updates the game state based on the player's input</summary>
    /// <param name="keyInfo">The key information representing the player's input</param>
    /// <param name="mCurrentRow">The current row on the game board</param>
    /// <param name="mCurrentCol">The current column on the game board</param>
    void UpdateGameState (ConsoleKeyInfo keyInfo) {
-      if (char.IsLetter (keyInfo.KeyChar) && mCurrentInput.Length < 5) {
-         mCurrentInput += keyInfo.KeyChar;
-         mCurrentCol = mCurrentInput.Length * 4;
-         SetCursorPosition (mCurrentCol + startX - 3, mCurrentRow);
-         Write ($" {keyInfo.KeyChar.ToString ().ToUpper ()}");
-      } else if (keyInfo.Key == ConsoleKey.Enter && mCurrentInput.Length == 5) {
-         Guess guess = MakeGuess (mCurrentInput.ToUpper ());
-         if (WordList.IsWord (mCurrentInput)) {
-            UpdateColor (mCurrentRow, guess);
-            if (IsGuessCorrect (guess)) {
-               mCurrentRow = 0;
-               WriteLine ("\n");
+      switch (keyInfo.Key) {
+         case ConsoleKey.Enter when mCurrentInput.Length == mWordLen:
+            Guess guess = MakeGuess (mCurrentInput.ToUpper ());
+            if (WordList.IsWord (mCurrentInput)) {
+               UpdateColor (mCurrentRow, guess);
+               mCurrentInput = "";
+               mCurrentRow += 2;
+               mGuessesLeft--;
+            } else {
+               SetCursorPosition (startX + 3, mMsgLine); // prints error message in the center of 25th row
+               ForegroundColor = ConsoleColor.Yellow;
+               WriteLine ($"{mCurrentInput.ToUpper ()} is invalid");
+               ResetColor ();
             }
-            mCurrentInput = "";
-            mCurrentRow += 2;
-            mGuessesLeft--;
-         } else {
-            SetCursorPosition (startX + 3, 25);
-            ForegroundColor = ConsoleColor.Yellow;
-            WriteLine ($"{mCurrentInput.ToUpper ()} is invalid");
-            ResetColor ();
-         }
-      } else if (keyInfo.Key == ConsoleKey.Backspace && mCurrentInput.Length > 0) {
-         SetCursorPosition (mCurrentCol, mCurrentRow);
-         if (mCurrentCol < startX + mBoardWidth) Write ($" · ");
-         mCurrentInput = mCurrentInput[..^1];
-         mCurrentCol = mCurrentInput.Length * 4 + 1;
-         SetCursorPosition (startX + 3, 25);
-         WriteLine ("                         ");
+            break;
+         case >= ConsoleKey.A and <= ConsoleKey.Z when mCurrentInput.Length < mWordLen:
+            mCurrentInput += keyInfo.KeyChar;
+            mCurrentCol = mCurrentInput.Length * mCellWidth + startX - 3;
+            SetCursorPosition (mCurrentCol, mCurrentRow);
+            Write ($" {keyInfo.KeyChar.ToString ().ToUpper ()}");
+            break;
+         case ConsoleKey.Backspace when mCurrentInput.Length > 0:
+            SetCursorPosition (mCurrentCol, mCurrentRow);
+            if (mCurrentCol < startX + mBoardWidth) Write ($" · ");
+            mCurrentInput = mCurrentInput[..^1];
+            mCurrentCol = mCurrentInput.Length * mCellWidth + 1;
+            SetCursorPosition (startX + 3, mMsgLine); // removes error message in row 25 after pressing key
+            WriteLine ("                         ");
+            break;
+         default: break;
       }
    }
+
    /// <summary> Prints the result of the Wordle game, indicating whether the player won or lost</summary>
    void PrintResult () {
-      SetCursorPosition (startX, 25);
-      if (GameOver () && mGuesses.Any (IsGuessCorrect)) {
+      SetCursorPosition (startX - 3, mMsgLine - 1);
+      if (!GameOver ()) return;
+      if (mGuesses.Any (IsGuessCorrect)) {
          ForegroundColor = ConsoleColor.Green;
          WriteLine ($"You found the word in {6 - mGuessesLeft} tries");
          ResetColor ();
-      } else if (GameOver () && !mGuesses.Any (IsGuessCorrect)) {
+      } else {
          ForegroundColor = ConsoleColor.Red;
          WriteLine ($"Sorry, you lost.The word was:{mGameWord.Word} ");
          ResetColor ();
-      } else WriteLine ();
+      }
    }
-   /// <summary>Checks if the game is over based on the number of remaining guesses and correct guesses</summary>
-   bool GameOver () => mGuessesLeft <= 0 || mGuesses.Any (IsGuessCorrect);
-   /// <summary>Runs the Wordle game, allowing the player to make guesses and play the game</summary>
 
+   /// <summary>Checks if the game is over based on the number of remaining guesses and correct guesses</summary>
+   bool GameOver () => mGuessesLeft == 0 || mGuesses.Any (IsGuessCorrect);
+
+   /// <summary>Runs the Wordle game, allowing the player to make guesses and play the game</summary>
    public void Run () {
-      OutputEncoding = Encoding.UTF8;
       do {
          Clear ();
-         CursorVisible = false;
-         SetCursorPosition (startX + 4, 1);
+         SetCursorPosition (startX + mCellWidth, 1);
          WriteLine ("WORDLE\n");
-         mCurrentRow = 5;
+         mCurrentRow = 3;
          DisplayBoard ();
          alpColor = GetAlpColorDictionary ();
          while (!GameOver ()) {
-            mCurrentCol = startX + (mCurrentInput.Length * 4) + 1;
+            mCurrentCol = startX + (mCurrentInput.Length * mCellWidth) + 1;
             SetCursorPosition (mCurrentCol, mCurrentRow);
             if (mCurrentCol < startX + mBoardWidth) Write ($" ◌ ");
             ConsoleKeyInfo keyInfo = ReadKey (true);
             UpdateGameState (keyInfo);
-            SetCursorPosition (mCurrentCol + 4, mCurrentRow);
+            SetCursorPosition (mCurrentCol + mCellWidth, mCurrentRow);
          }
          PrintResult ();
       } while (PlayAgain ());
    }
+
    /// <summary>Asks the player if they want to play the game again</summary>
    /// <returns>True if the player wants to play again, otherwise false</returns>
    bool PlayAgain () {
-      SetCursorPosition (startX, 26);
+      SetCursorPosition (startX - 3, mMsgLine); // Align the message to center
       WriteLine ("Do you want to continue? (Y/N)");
       ConsoleKeyInfo key = ReadKey (true);
       if (key.Key == ConsoleKey.Y) {
@@ -244,8 +246,9 @@ public class Wordle {
    string mCurrentInput = "";
    static Dictionary<char, ConsoleColor> alpColor;
    static readonly int mBoardWidth = 21;
-   static readonly int mBoardHeight = 17;
-   static int startX = WindowWidth / 2 - mBoardWidth - 5;
+   static readonly int mBoardHeight = 13 + 2;
+   static readonly int startX = WindowWidth / 2 - mBoardWidth - 5;
+   static readonly int mCellWidth = 4, mMsgLine = 23, mWordLen = 5;
    int mCurrentCol, mCurrentRow;
    #endregion
 }
@@ -254,9 +257,10 @@ public class Wordle {
 #region Program --------------------------------------------------------------------------------
 class Program {
    static void Main () {
+      CursorVisible = false;
+      OutputEncoding = Encoding.UTF8;
       do {
          Clear ();
-         CursorVisible = false;
          Wordle game = new ();
          game.Run ();
          ConsoleKeyInfo playAgainKey = ReadKey (true);
