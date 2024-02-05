@@ -259,13 +259,7 @@ class Program {
    static void Main () {
       CursorVisible = false;
       OutputEncoding = Encoding.UTF8;
-      do {
-         Clear ();
-         Wordle game = new ();
-         game.Run ();
-         ConsoleKeyInfo playAgainKey = ReadKey (true);
-         if (playAgainKey.Key != ConsoleKey.Y) break;
-      } while (true);
+      new Wordle ().Run ();
    }
 }
 #endregion
