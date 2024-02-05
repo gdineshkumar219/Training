@@ -110,8 +110,10 @@ public class Wordle {
             char currentChar = guess.Word[col];
             if (alpColor.TryGetValue (guess.Word[col], out ConsoleColor existingColor)) {
                if (WordleHelpers.State (color) > WordleHelpers.State (existingColor)) alpColor[guess.Word[col]] = color;
-               ForegroundColor = color;
+               BackgroundColor = color;
+               ForegroundColor = ConsoleColor.Black;
                Write ($" {currentChar} ");
+               ResetColor ();
             }
          }
       }
