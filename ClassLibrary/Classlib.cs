@@ -13,8 +13,8 @@ namespace ClassLibrary {
       public static void WriteOutputToFile (Dictionary<string, List<string>> anagramGroups, string opFilePath) {
          try {
             using (StreamWriter sw = new (opFilePath))
-               foreach (var group in anagramGroups.Values)
-                  sw.WriteLine ($"{group.Count} {string.Join (", ", group.OrderByDescending (w => w.Length))}");
+               foreach (var group in anagramGroups.Values.Where (group => group.Count > 1).OrderByDescending (group => group.Count))
+                  sw.WriteLine ($"{group.Count} {string.Join (", ", group)}");
             Console.WriteLine ($"Output written to {opFilePath}");
          } catch (Exception e) {
             Console.WriteLine ($"An error occurred while writing to the file: {e.Message}");

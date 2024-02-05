@@ -15,6 +15,8 @@ namespace Training {
          string[] words = File.ReadAllLines (filePath);
          Dictionary<string, List<string>> anagramGroups = Anagrams.FindAnagrams (words);
          var outputFilePath = "C:\\etc\\anagram.txt";
+         foreach (var group in anagramGroups.Values.Where (group => group.Count > 1).OrderByDescending (group => group.Count))
+            Console.WriteLine ($"{group.Count} {string.Join (", ", group)}");
          Anagrams.WriteOutputToFile (anagramGroups, outputFilePath);
       }
    }
