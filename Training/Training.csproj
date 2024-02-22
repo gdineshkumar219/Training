@@ -9,10 +9,39 @@
 
   <ItemGroup>
     <None Remove=".gitignore" />
+    <None Remove="data\correctGuess.txt" />
+    <None Remove="data\dict-5.txt" />
+    <None Remove="data\failedGuess.txt" />
+    <None Remove="data\incomplete.txt" />
+    <None Remove="data\invalid.txt" />
+    <None Remove="data\puzzle-5.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="data\correctGuess.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\dict-5.txt" />
+    <EmbeddedResource Include="data\failedGuess.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\incomplete.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\invalid.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\puzzle-5.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="data\Test_File.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -2,14 +2,47 @@
 // Training 
 // Copyright (c) Metamation India.
 // ----------------------------------------------------------------------------------------
-// Program.cs
+// UnitTest1.cs
 // --------------------------------------------------------------------------------------------
-
+using Training;
 namespace TestTraining {
    [TestClass]
    public class UnitTest1 {
       [TestMethod]
-      public void TestMethod1 () {
+      public void TestCorrectGuess () {
+         Wordle wordle = new ("ADEPT", new List<string> { "ABOUT", "DEPTH", "PAINT", "APART", "AGAIN", "ADEPT" });
+         wordle.Run ();
+         Assert.IsTrue (CheckTextFilesEqual ("../Training/data/Test_File.txt", "data/CorrectGuess.txt"));
+      }
+
+      [TestMethod]
+      public void TestFailedGuess () {
+         Wordle wordle = new ("ADEPT", new List<string> { "ABOUT", "DEPTH", "PAINT", "APART", "AGAIN", "ALONE" });
+         wordle.Run ();
+         Assert.IsTrue (CheckTextFilesEqual ("../Training/data/Test_File.txt", "/Training/data/failedGuess.txt"));
+      }
+
+      [TestMethod]
+      public void TestInvalid () {
+         Wordle wordle = new ("ADEPT", new List<string> { "ABOUP" });
+         wordle.Run ();
+         Assert.IsTrue (CheckTextFilesEqual ("../Training/data/Test_File.txt", "/Training/data/invalid.txt"));
+      }
+
+      [TestMethod]
+      public void TestInComplete () {
+         Wordle wordle = new ("ADEPT", new List<string> { "ABOUT", "DEPTH", "PAINT", "APA" });
+         wordle.Run ();
+         Assert.IsTrue (CheckTextFilesEqual ("../Training/data/Test_File.txt", "/Training/data/incomplete.txt"));
+      }
+
+      bool CheckTextFilesEqual (string f1, string f2) {
+         var file1 = File.ReadAllText (f1);
+         var file2 = File.ReadAllText (f2);
+         if (file1.Equals (file2)) return true;
+         var p = System.Diagnostics.Process.Start ("C:/Program Files/WinMerge/WinMergeU.exe", $"\"{f1}\" \"{f2}\"");
+         p.WaitForExit ();
+         return false;
       }
    }
 }
