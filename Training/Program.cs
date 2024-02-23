@@ -17,7 +17,7 @@ namespace Training {
          mWinWidth = WindowWidth / 2;
       }
 
-      public Wordle (string secretWord, List<string> guess, string filePath = $"../Training/data/Test_File.txt") {
+      public Wordle (string secretWord, List<string> guess, ConsoleKey key = ConsoleKey.Enter, string filePath = $"../Training/data/Test_File.txt") {
          mWord = secretWord;
          mList = guess;
          if (File.Exists (filePath)) File.Delete (filePath);
@@ -25,42 +25,40 @@ namespace Training {
          mSw = new StreamWriter (mFilePath, false);
          mDict = LoadStrings ("dict-5.txt");
          mWinWidth = 100;
+         mKey = key;
+      }
+
+      void UserInputMode () {
+         Clear ();
+         ClearScreen ();
+         SelectWord ();
+         DisplayBoard ();
+         while (!GameOver) {
+            ConsoleKey key = ReadKey (true).Key;
+            UpdateGameState (key);
+            ResetFile ();
+            DisplayBoard ();
+         }
+         PrintResult ();
+      }
+
+      void CustomInputMode () {
+         foreach (string word in mList) {
+            foreach (char ch in word) {
+               ClearScreen ();
+               UpdateGameState ((ConsoleKey)ch);
+            }
+            UpdateGameState (mKey);
+            ResetFile ();
+            DisplayBoard ();
+         }
+         if (GameOver) PrintResult ();
+         mSw.Close ();
       }
 
       public void Run () {
-         if (mList is null) {
-            Clear ();
-            ClearScreen ();
-            SelectWord ();
-            DisplayBoard ();
-            while (!GameOver) {
-               ConsoleKeyInfo key = ReadKey (true);
-               UpdateGameState (key);
-               ResetFile ();
-               DisplayBoard ();
-            }
-            PrintResult ();
-         } else {
-            int i = 0;
-            foreach (string word in mList) {
-               foreach (char ch in word) {
-                  ClearScreen ();
-                  UpdateGameState (new ConsoleKeyInfo (ch, ConsoleKey.Enter, false, false, false));
-                  ResetFile ();
-                  DisplayBoard ();
-                  i++;
-               }
-               if (i == 5) {
-                  ConsoleKeyInfo key = new (' ', ConsoleKey.Enter, false, false, false); ;
-                  UpdateGameState (key);
-                  ResetFile ();
-                  DisplayBoard ();
-                  i = 0;
-               }
-            }
-            if (GameOver) PrintResult ();
-            mSw.Close ();
-         }
+         if (mList is null) UserInputMode ();
+         else CustomInputMode ();
       }
 
       // Implementation ----------------------------
@@ -123,7 +121,7 @@ namespace Training {
          mSw.Flush ();
       }
 
-      private void ResetFile () {
+      void ResetFile () {
          mSw.Close ();
          FileStream file = new (mFilePath, FileMode.OpenOrCreate);
          mSw = new (file);
@@ -146,14 +144,14 @@ namespace Training {
          };
 
       // Update the game-state based on the key the user pressed
-      void UpdateGameState (ConsoleKeyInfo info) {
+      void UpdateGameState (ConsoleKey info) {
          mBadWord = null;
-         if (info.Key is ConsoleKey.LeftArrow or ConsoleKey.Backspace && mX > 0) {
+         if (info is ConsoleKey.LeftArrow or ConsoleKey.Backspace && mX > 0) {
             // First, handle left / backspace to erase the last character
             Set (--mX, mY, ' ');
             return;
          }
-         if (info.Key is ConsoleKey.Enter && mX == 5) {
+         if (info is ConsoleKey.Enter && mX == 5) {
             // Handle the Enter key to submit a new word
             // First, if the current word is not in the dictionar, don't 
             // accept it
@@ -165,7 +163,7 @@ namespace Training {
             if (mGuess[mY++] == mWord) { mSucceeded = true; } else if (mY == 6) mFailed = true;
             return;
          }
-         char ch = char.ToUpper (info.KeyChar);
+         char ch = char.ToUpper ((char)info);
          if (ch is >= 'A' and <= 'Z' && mX < 5) {
             // Handle letter keys to input a new character
             Set (mX++, mY, ch);
@@ -218,7 +216,6 @@ namespace Training {
             if (color == Yellow) {
                mSw.WriteLine ();
                mSw.Write ($"{new string (' ', x)}");
-
             }
             mSw.WriteLine (data.ToString ());
          } else if (y < 19) {
@@ -238,6 +235,7 @@ namespace Training {
          mSw.Flush ();
          ResetColor ();
       }
+
       // Helper routine to load strings from a assembly-manifest resource file
       string[] LoadStrings (string file) {
          using var stream = Assembly.GetExecutingAssembly ().GetManifestResourceStream ($"Training.data.{file}");
@@ -256,6 +254,7 @@ namespace Training {
       StreamWriter mSw;
       int mTemp = -1, mWinWidth;
       static string mFilePath;
+      ConsoleKey mKey;
    }
 
    internal class Program {

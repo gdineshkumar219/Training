@@ -12,6 +12,8 @@
     <None Remove="data\correctGuess.txt" />
     <None Remove="data\dict-5.txt" />
     <None Remove="data\failedGuess.txt" />
+    <None Remove="data\handleBackSpaceKey.txt" />
+    <None Remove="data\handleLeftArrowKey.txt" />
     <None Remove="data\incomplete.txt" />
     <None Remove="data\invalid.txt" />
     <None Remove="data\puzzle-5.txt" />
@@ -23,6 +25,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="data\dict-5.txt" />
     <EmbeddedResource Include="data\failedGuess.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\handleBackSpaceKey.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data\handleLeftArrowKey.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="data\incomplete.txt">
