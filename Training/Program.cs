@@ -3,12 +3,11 @@
 // Copyright (c) Metamation India.
 // ------------------------------------------------------------------------------------------------
 // Program.cs
-// Simple Program to Print the text 'Hello, World!' in Console
 // ------------------------------------------------------------------------------------------------
 using ClassLibrary;
 namespace Training {
    internal class Program {
-      static void Main (string[] args) {
+      static void Main () {
          PriorityQueue<int> pq = new ();
          int n = 10;
          var random = new Random ();
@@ -16,14 +15,14 @@ namespace Training {
          foreach (var element in elements) pq.Enqueue (element);
          Console.WriteLine ("Priority queue after enqueue: ");
          pq.DisplayHeap ();
-         Console.WriteLine (new string ('_', 50));
+         Console.WriteLine (new string ('_', 60));
          Array.Sort (elements);
          foreach (var expected in elements) {
             var actual = pq.Dequeue ();
             if (actual == expected) {
                pq.DisplayHeap ();
                Console.WriteLine ($"The minimum value returned from the heap is : {actual}");
-               Console.WriteLine (new string ('_', 50));
+               Console.WriteLine (new string ('_', 60));
             }
          }
       }
