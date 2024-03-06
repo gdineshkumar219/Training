@@ -4,6 +4,8 @@
 // ------------------------------------------------------------------------------------------------
 // Program.cs
 // ------------------------------------------------------------------------------------------------
+using System.Diagnostics;
+
 namespace ClassLibrary {
    #region PriorityQueue --------------------------------------------------------------------------
    /// <summary> Represents a priority queue data structure implemented using a binary heap </summary>
@@ -21,7 +23,7 @@ namespace ClassLibrary {
       /// <param name="value">The value to insert</param>
       public void Enqueue (T value) {
          mHeapList.Add (value);
-         SiftUp (mHeapList.Count - 1);
+         SiftUp ();
       }
 
       /// <summary> Removes and returns the element with the highest priority in the priority queue </summary>
@@ -29,7 +31,7 @@ namespace ClassLibrary {
       public T Dequeue () {
          if (IsEmpty) throw new InvalidOperationException ("Priority queue is empty");
          T root = mHeapList[0];
-         mHeapList[0] = mHeapList[mHeapList.Count - 1];
+         mHeapList[0] = mHeapList[^1];
          mHeapList.RemoveAt (mHeapList.Count - 1);
          SiftDown (0);
          return root;
@@ -37,7 +39,8 @@ namespace ClassLibrary {
 
       /// <summary> Adjusts the heap upward from the specified index to maintain the heap property</summary>
       /// <param name="index">The index to start heapifying up from</param>
-      void SiftUp (int index) {
+      void SiftUp () {
+         int index = mHeapList.Count - 1;
          int parentIndex = (index - 1) / 2;
          while (index > 0 && mHeapList[index].CompareTo (mHeapList[parentIndex]) < 0) {
             Swap (index, parentIndex);
@@ -45,6 +48,7 @@ namespace ClassLibrary {
             parentIndex = (index - 1) / 2;
          }
       }
+
 
       /// <summary> Adjusts the heap downward from the specified index to maintain the heap property</summary>
       /// <param name="index">The index to start heapifying down from</param>
@@ -69,7 +73,10 @@ namespace ClassLibrary {
 
       /// <summary>Displays the heap </summary>
 
-      public void DisplayHeap () => DisplayHeapAsTree (0, 0);
+      public void DisplayHeap () {
+         Console.ResetColor ();
+         DisplayHeapAsTree (0, 0);
+      }
 
       private void DisplayHeapAsTree (int index, int depth) {
          if (index < mHeapList.Count) {
