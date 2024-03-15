@@ -4,6 +4,8 @@
 // ----------------------------------------------------------------------------------------
 // UnitTest1.cs
 // --------------------------------------------------------------------------------------------
+using System.Diagnostics;
+using System.Reflection;
 using Training;
 namespace TestTraining {
    [TestClass]
@@ -54,7 +56,11 @@ namespace TestTraining {
          var file1 = File.ReadAllText (f1);
          var file2 = File.ReadAllText (f2);
          if (file1.Equals (file2)) return true;
-         var p = System.Diagnostics.Process.Start ("C:/Program Files/WinMerge/WinMergeU.exe", $"\"{f1}\" \"{f2}\"");
+         string result = Directory.EnumerateFiles (Environment.GetFolderPath (Environment.SpecialFolder.ProgramFiles),
+                    "WinMerge/WinMergeU.exe").First ();
+         Process p = new ();
+         if (result != "")
+            p = Process.Start (result, $"\"{f1}\" \"{f2}\"");
          p.WaitForExit ();
          return false;
       }

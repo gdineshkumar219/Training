@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------
 
 using System.Reflection;
+using System.Text;
 using static System.Console;
 using static System.ConsoleColor;
 
@@ -93,7 +94,7 @@ namespace Training {
                if (ch == ' ') ch = '\u00b7';
                if (x == mX && y == mY) ch = '\u25cc';
                Put (x * 3 + GRIDX, y * 2 + GRIDY, color, ch);
-               mSw.Flush ();
+               //mSw.Flush ();
             }
 
          // Then, add the 'keyboard hint display' - this shows the keys 
@@ -111,14 +112,12 @@ namespace Training {
                if (a == b) color = Green;
             }
             Put (x * 5 + KBDX, y * 1 + KBDY, color, ch);
-            mSw.Flush ();
          }
 
          // If the user has recently typed in a word that is not in the
          // dictionary, display that
          string error = (mBadWord != null) ? $"{mBadWord} is not a word" : new string (' ', 20);
          Put (mWinWidth - 10, RESULTY + 1, Yellow, error);
-         mSw.Flush ();
       }
 
       void ResetFile () {
@@ -126,10 +125,8 @@ namespace Training {
          FileStream file = new (mFilePath, FileMode.OpenOrCreate);
          mSw = new (file);
       }
-
       int GRIDX = 3, GRIDY = 1;
       int KBDX = 3, KBDY = 14;
-
       // Check if the game is over
       bool GameOver => mSucceeded || mFailed;
       bool mSucceeded;     // User succeeded in guessing the word
@@ -189,6 +186,7 @@ namespace Training {
          if (mList is null) ReadKey ();
          WriteLine ();
       }
+
       int RESULTY = 18;
 
       void Put (int x, int y, ConsoleColor color, object data) {
@@ -199,41 +197,45 @@ namespace Training {
          CursorLeft = x; CursorTop = y; ForegroundColor = color;
          Write (data);
          PutToFile (x, y, color, data);
-         mSw.Flush ();
          ResetColor ();
       }
 
       void PutToFile (int x, int y, ConsoleColor color, object data) {
+         mBuffer.Clear ();
          if (y != mTemp && y != 19) {
-            if (y == 18) mSw.WriteLine ();
-            else mSw.WriteLine ("\n");
+            if (y == 18) mBuffer.AppendLine ();
+            else mBuffer.AppendLine ("\n");
             mTemp = y;
             if (y % 6 == 0) x++;
-            mSw.Write ($"{new string (' ', x)}");
+            mBuffer.Append (new string (' ', x));
          }
          if (y > 18) {
             mTemp = y;
             if (color == Yellow) {
-               mSw.WriteLine ();
-               mSw.Write ($"{new string (' ', x)}");
+               mBuffer.AppendLine ();
+               mBuffer.Append (new string (' ', x));
             }
-            mSw.WriteLine (data.ToString ());
+            mBuffer.AppendLine (data.ToString ());
          } else if (y < 19) {
             foreach (char c in data.ToString ()) {
-               if (color is ConsoleColor.White or ConsoleColor.Gray && c != '_') {
-                  if (char.IsLetter (c) && y > 12) mSw.Write ($" {c}   "); // Keyboard before key-press
-                  else mSw.Write ($" {c} ");
+               if (color is White or Gray && c != '_') {
+                  if (char.IsLetter (c) && y > 12)
+                     mBuffer.Append ($" {c}   "); // Keyboard before key-press
+                  else
+                     mBuffer.Append ($" {c} ");
                } else {
                   string annotatedChar = Color2Char (c, color);
                   if (char.IsLetterOrDigit (c)) {
-                     if (y > 13 && y <= 17) mSw.Write ($"{annotatedChar}  "); // Indication of keyboard after each state
-                     else if (y < 13) mSw.Write (annotatedChar);
-                  } else if (c == '_') mSw.Write ($"{c}"); // DASH HAS NO SPACES
+                     if (y > 13 && y <= 17)
+                        mBuffer.Append ($"{annotatedChar}  "); // Indication of keyboard after each state
+                     else if (y < 13)
+                        mBuffer.Append (annotatedChar);
+                  } else if (c == '_')
+                     mBuffer.Append ($"{c}"); // DASH HAS NO SPACES
                }
             }
          }
-         mSw.Flush ();
-         ResetColor ();
+         mSw.Write (mBuffer.ToString ());
       }
 
       // Helper routine to load strings from a assembly-manifest resource file
@@ -252,8 +254,9 @@ namespace Training {
       int mX = 0;       // The letter within that word we're typing in
       string mBadWord;  // This is set if the user types in a word not in the dictionary
       StreamWriter mSw;
+      StringBuilder mBuffer = new ();
       int mTemp = -1, mWinWidth;
-      static string mFilePath;
+      static string mFilePath = "../Training/data/Test_File.txt";
       ConsoleKey mKey;
    }
 
